@@ -25,12 +25,6 @@ const Home = () => {
     }
   }, [playerState]);
 
-  socket.on('update-state', (users) => {
-    console.log('(Home) update-state called');
-    //@ts-ignore
-    setGameState({ ...gameState, users });
-  });
-
   return (
     <>
       <sc.HomeContainer>

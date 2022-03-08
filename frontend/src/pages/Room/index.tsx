@@ -7,7 +7,7 @@ const Room = () => {
   const { gameState, setGameState } = useContext(GameContext);
   return (
     <>
-      <>{gameState?.users.open ? <Lobby></Lobby> : <Game></Game>}</>
+      <>{gameState?.open ? <Lobby></Lobby> : <Game></Game>}</>
     </>
   );
 };
