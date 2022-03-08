@@ -18,7 +18,7 @@ const Game = () => {
     let tempDice = [];
     for (let i = 0; i < diceRemaining; i++) {
       console.log('loop iteration');
-      let dieValue = Math.floor(Math.random() * 6);
+      let dieValue = Math.floor(Math.random() * 6) + 1;
       tempDice.push(dieValue);
     }
     setDiceArray([...tempDice]);
