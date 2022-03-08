@@ -20,3 +20,16 @@ export const Die = styled.div`
   border-radius: 8px;
   border: 1px solid gray;
 `;
+
+export const Button = styled.div`
+  padding: 8px;
+  margin: 16px;
+  border-radius: 8px;
+  border: 1px solid gray;
+  cursor: pointer;
+`;
+
+export const ActionsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+`;

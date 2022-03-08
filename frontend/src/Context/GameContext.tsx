@@ -11,9 +11,9 @@ type Avatar = 'male' | 'female' | undefined;
 
 interface User {
   avatarSelection?: Avatar;
+  diceRemaining: number;
+  currentDice: number[];
   roomLeader?: boolean;
-  DiceRemaining?: number;
-  currentDice?: number[];
 }
 
 interface Dice {
@@ -29,28 +29,36 @@ interface GameState {
   room?: string;
   open?: boolean;
   users: { [key: string]: User };
-  turn?: number;
+  turn: number;
   dice?: Dice;
   phase?: string;
 }
 
 interface GameContext {
-  gameState?: GameState;
+  gameState: GameState;
   setGameState?: Dispatch<SetStateAction<GameState>>;
 }
 
-export const GameContext = React.createContext<GameContext>({});
+export const GameContext = React.createContext<GameContext>({
+  gameState: { users: {}, turn: 0 },
+});
 
 const GameContextProvider = ({ children }: { children: ReactNode }) => {
   const { socket } = useContext(SocketContext);
   const [gameState, setGameState] = useState<GameState>({
     open: true,
     users: {},
+    turn: 0,
   });
 
   socket.on('update-state', (state) => {
     console.log('(Home) update-state called');
     setGameState({ ...gameState, users: state.users, open: state.open });
+  });
+
+  socket.on('next-turn', () => {
+    let oldTurn = gameState.turn;
+    setGameState({ ...gameState, turn: oldTurn + 1 });
   });
 
   return (

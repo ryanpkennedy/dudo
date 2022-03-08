@@ -15,11 +15,13 @@ interface PlayerState {
 }
 
 interface PlayerContext {
-  playerState?: PlayerState;
+  playerState: PlayerState;
   setPlayerState?: Dispatch<SetStateAction<PlayerState>>;
 }
 
-export const PlayerContext = React.createContext<PlayerContext>({});
+export const PlayerContext = React.createContext<PlayerContext>({
+  playerState: {},
+});
 
 const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
   const { socket } = useContext(SocketContext);

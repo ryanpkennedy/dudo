@@ -3,17 +3,17 @@ import { Server, Socket } from 'socket.io';
 // const io = new Server({ cors: { origin: ['http://localhost:3000'] } });
 const io = new Server({ cors: { origin: '*' } });
 
-interface user {
+interface User {
   avatarSelection: string;
   diceRemaining?: number;
-  currentDice?: number[];
-  room?: string;
+  currentDice: number[];
   roomLeader?: boolean;
 }
 
 interface room {
+  dice?: {};
   open?: boolean;
-  users: { [key: string]: user };
+  users: { [key: string]: User };
 }
 
 let maxRoomSize = 8;
@@ -25,12 +25,15 @@ let db: { [key: string]: room } = {
     users: {
       Ryan: {
         avatarSelection: 'male',
+        currentDice: [],
       },
       Bob: {
         avatarSelection: 'female',
+        currentDice: [],
       },
       Joe: {
         avatarSelection: 'male',
+        currentDice: [],
       },
     },
   },
@@ -39,6 +42,37 @@ let db: { [key: string]: room } = {
 };
 
 let activeConnections: { [key: string]: {} } = {};
+
+const countDice = (room: string) => {
+  let allUsersRolled = true;
+
+  let usersArray = Object.getOwnPropertyNames(db[room].users);
+  for (let user of usersArray) {
+    if (db[room].users[user].currentDice.length === 0) {
+      allUsersRolled = false;
+    }
+  }
+
+  if (!allUsersRolled) {
+    console.log('waiting for other users to role');
+  } else {
+    let newDice: { [key: number]: number } = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+    };
+    for (let user of usersArray) {
+      for (let i of db[room].users[user].currentDice) {
+        newDice[i] += 1;
+      }
+    }
+    db[room].dice = newDice;
+    console.log('game dice count: ', newDice);
+  }
+};
 
 io.on('connection', (socket) => {
   if (socket.handshake.query.id !== 'null') {
@@ -76,9 +110,10 @@ io.on('connection', (socket) => {
       },
       callback
     ) => {
-      let newUser: user = {
+      let newUser: User = {
         avatarSelection: user.avatarSelection,
-        room: user.room,
+        diceRemaining: 6,
+        currentDice: [],
         roomLeader: false,
       };
 
@@ -128,8 +163,13 @@ io.on('connection', (socket) => {
   socket.on('user-roll', ({ id, roll }) => {
     let idArray = id.split('_');
     let room = idArray[0];
-    let oldId = idArray[1];
-    console.log(roll);
+    let username = idArray[1];
+    db[room]['users'][username].currentDice = roll;
+    countDice(room);
+  });
+
+  socket.on('increment-turn', ({ room }) => {
+    io.to(room).emit('next-turn');
   });
 
   //holy shit this is embarrassing
