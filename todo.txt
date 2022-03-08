@@ -1,0 +1,52 @@
+to dos
+
+1) Work on individual socket messaging (based on id)
+    - needed for validation
+    for example: on login
+        client emits login attempt to Server
+        server checks that lobby isnt full and username is valid
+            if not, then server emits error back to individual client socket
+            if login successful, server emits new user to all client sockets
+
+Key Components of lobby / login
+    x Need Username, Room, and AvatarSelection to join. Cant send join event without these three filled out
+    - Room needs to be available 
+        x not full, 
+        - and not closed
+    - Username needs to be available within room
+
+If on Login screen, storageId is empty. So refresh is simple and easy
+
+Once in Lobby, if you refresh, need to use storageId to fetch state from server
+    - or should certain game state also be kept in browser storage?
+
+If you logout of lobby, name is removed from room
+
+If you close tab, and then go back to page
+    - sometimes you want to get back into your previous room
+    - other times you do not
+
+What happens if someone randomly tries to login to a room that is being used elsewhere?
+- include an "open" property in the room
+- can switch this to false, when the game starts, that way no one in some other location can accidently log in to this room
+
+Store SocketId with User Object in Room Object
+    Ex: db : {
+        ASDF: {
+            Ryan: {
+                socketId: 'ads987asdf', 
+                avatarSelection: 'male',
+            }
+        }
+    }
+
+socket.on('disconnect', (username, room) => {
+    delete db[room][username].socketId
+}
+
+so now there is no socketId attached to the given user
+but that user still has his custom id = "room_username" in localstorage
+so if the user reconnects, you take the customId to index into the given user in the db
+and then assign it the new socketId, checking that it doesnt have a socketId first
+
+this way, 
