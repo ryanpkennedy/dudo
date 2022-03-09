@@ -6,7 +6,7 @@ import Login from '../../pages/Login';
 import Room from '../Room';
 import * as sc from './styled';
 
-const Home = () => {
+const Home = React.memo(() => {
   console.log('(Home) Home Component rendered');
   let [id, setId] = useState(localStorage.getItem('id'));
   const { gameState, setGameState } = useContext(GameContext);
@@ -40,6 +40,6 @@ const Home = () => {
       </sc.HomeContainer>
     </>
   );
-};
+});
 
 export default Home;

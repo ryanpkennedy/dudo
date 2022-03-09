@@ -5,7 +5,6 @@ import React, {
   SetStateAction,
   useContext,
 } from 'react';
-import { SocketContext } from './SocketProvider';
 
 interface PlayerState {
   id?: string | null;
@@ -24,7 +23,6 @@ export const PlayerContext = React.createContext<PlayerContext>({
 });
 
 const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
-  const { socket } = useContext(SocketContext);
   let idArray = localStorage.getItem('id')?.split('_');
   let username = idArray ? idArray[1] : undefined;
   let room = idArray ? idArray[0] : undefined;
