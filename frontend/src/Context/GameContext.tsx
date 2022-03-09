@@ -4,6 +4,7 @@ import React, {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
 } from 'react';
 import { SocketContext } from './SocketProvider';
 
@@ -51,21 +52,23 @@ const GameContextProvider = ({ children }: { children: ReactNode }) => {
     turn: 0,
   });
 
-  socket.on('update-state', (state) => {
-    console.log('(GameContext) update-state called');
-    setGameState({
-      ...gameState,
-      users: state.users,
-      open: state.open,
-      turn: state.turn,
+  useEffect(() => {
+    socket.on('update-state', (state) => {
+      console.log('(GameContext) update-state called');
+      setGameState({
+        ...gameState,
+        users: state.users,
+        open: state.open,
+        turn: state.turn,
+      });
     });
-  });
 
-  socket.on('next-turn', () => {
-    console.log('(Game Context) next turn event received');
-    let oldTurn = gameState.turn;
-    setGameState({ ...gameState, turn: oldTurn + 1 });
-  });
+    socket.on('next-turn', () => {
+      console.log('(Game Context) next turn event received');
+      let oldTurn = gameState.turn;
+      setGameState({ ...gameState, turn: oldTurn + 1 });
+    });
+  }, []);
 
   return (
     <GameContext.Provider value={{ gameState, setGameState }}>

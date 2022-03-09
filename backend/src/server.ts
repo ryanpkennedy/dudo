@@ -76,7 +76,14 @@ const countDice = (room: string) => {
   }
 };
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+  let liveSockets = await io.allSockets();
+  console.log('current connections: ', liveSockets);
+  socket.on('disconnect', async () => {
+    console.log('socket disconnect');
+    liveSockets = await io.allSockets();
+    console.log('current connections: ', liveSockets);
+  });
   if (socket.handshake.query.id !== 'null') {
     // @ts-ignore
     let idArray = socket.handshake.query.id.split('_');
