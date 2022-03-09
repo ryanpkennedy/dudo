@@ -11,15 +11,9 @@ const Game = () => {
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
 
-  let diceRemaining = 6;
-  let playerDice: number[] = [];
-
-  if (playerState.username) {
-    diceRemaining = gameState.users[playerState?.username].diceRemaining;
-    playerDice = gameState.users[playerState.username].currentDice;
-  }
-
-  const [diceArray, setDiceArray] = useState<number[]>(playerDice);
+  const [diceArray, setDiceArray] = useState<number[]>(
+    gameState.users[playerState.username!].currentDice
+  );
 
   let usersArray = Object.getOwnPropertyNames(gameState?.users);
   console.log('(Game) users array: ', usersArray[gameState.turn]);
@@ -28,8 +22,11 @@ const Game = () => {
   const handleRoll = () => {
     console.log('rolling dice');
     let tempDice = [];
-    for (let i = 0; i < diceRemaining; i++) {
-      console.log('loop iteration');
+    for (
+      let i = 0;
+      i < gameState.users[playerState.username!].diceRemaining;
+      i++
+    ) {
       let dieValue = Math.floor(Math.random() * 6) + 1;
       tempDice.push(dieValue);
     }
@@ -42,6 +39,7 @@ const Game = () => {
   };
 
   const handleBid = () => {
+    socket.emit('check-dudo');
     socket.emit('increment-turn', { room: playerState.room });
   };
 

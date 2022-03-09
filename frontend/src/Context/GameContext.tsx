@@ -52,11 +52,17 @@ const GameContextProvider = ({ children }: { children: ReactNode }) => {
   });
 
   socket.on('update-state', (state) => {
-    console.log('(Home) update-state called');
-    setGameState({ ...gameState, users: state.users, open: state.open });
+    console.log('(GameContext) update-state called');
+    setGameState({
+      ...gameState,
+      users: state.users,
+      open: state.open,
+      turn: state.turn,
+    });
   });
 
   socket.on('next-turn', () => {
+    console.log('(Game Context) next turn event received');
     let oldTurn = gameState.turn;
     setGameState({ ...gameState, turn: oldTurn + 1 });
   });

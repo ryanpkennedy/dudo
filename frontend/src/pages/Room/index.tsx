@@ -5,6 +5,7 @@ import Game from '../Game';
 
 const Room = () => {
   const { gameState, setGameState } = useContext(GameContext);
+  console.log('(Room) room component rendered');
   return (
     <>
       <>{gameState?.open ? <Lobby></Lobby> : <Game></Game>}</>

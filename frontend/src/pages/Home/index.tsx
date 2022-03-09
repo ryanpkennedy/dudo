@@ -7,6 +7,7 @@ import Room from '../Room';
 import * as sc from './styled';
 
 const Home = () => {
+  console.log('(Home) Home Component rendered');
   let [id, setId] = useState(localStorage.getItem('id'));
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
@@ -23,6 +24,10 @@ const Home = () => {
         }
       });
     }
+  }, []);
+
+  useEffect(() => {
+    setId(localStorage.getItem('id'));
   }, [playerState]);
 
   return (

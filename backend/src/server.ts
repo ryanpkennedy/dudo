@@ -14,6 +14,7 @@ interface room {
   dice?: {};
   open?: boolean;
   users: { [key: string]: User };
+  turn: number;
 }
 
 let maxRoomSize = 8;
@@ -22,6 +23,7 @@ let minRoomSize = 2;
 let db: { [key: string]: room } = {
   ASDF: {
     open: true,
+    turn: 0,
     users: {
       Ryan: {
         avatarSelection: 'male',
@@ -37,8 +39,8 @@ let db: { [key: string]: room } = {
       },
     },
   },
-  JFJF: { users: {} },
-  ROOM: { users: {} },
+  JFJF: { users: {}, turn: 0 },
+  ROOM: { users: {}, turn: 0 },
 };
 
 let activeConnections: { [key: string]: {} } = {};
@@ -93,6 +95,7 @@ io.on('connection', (socket) => {
     //verify that room exists and username exists in room
     if (db[room] && db[room]['users'][idArray[1]]) {
       socket.join(room);
+      console.log('update state called from get-state listener');
       io.to(room).emit('update-state', db[room]);
       callback({ status: '200' });
     } else {
@@ -124,7 +127,7 @@ io.on('connection', (socket) => {
         callback({ status: 'username taken' });
       } else {
         if (!db[user.room]) {
-          db[user.room] = { open: true, users: {} };
+          db[user.room] = { open: true, users: {}, turn: 0 };
           // this means this is the first user for this room, so make them the party leader
           newUser.roomLeader = true;
         }
@@ -144,6 +147,7 @@ io.on('connection', (socket) => {
           // const clients = io.sockets.adapter.rooms.get('R');
 
           console.log(`all users in room ${user.room}`, db[user.room].users);
+          console.log('update state called from login listener');
           io.to(user.room).emit('update-state', db[user.room]);
           callback({ status: '200' });
         }
@@ -155,7 +159,7 @@ io.on('connection', (socket) => {
     console.log('close-room event received for room', room);
     if (db[room]) {
       db[room].open = false;
-      console.log('sending update-state event');
+      console.log('update state called from login listener');
       io.to(room).emit('update-state', db[room]);
     }
   });
@@ -166,10 +170,17 @@ io.on('connection', (socket) => {
     let username = idArray[1];
     db[room]['users'][username].currentDice = roll;
     countDice(room);
+    io.to(room).emit('update-state', db[room]);
   });
 
   socket.on('increment-turn', ({ room }) => {
-    io.to(room).emit('next-turn');
+    let roomSize = Object.getOwnPropertyNames(db[room]['users']).length - 1;
+    if (db[room].turn === roomSize) {
+      db[room].turn = 0;
+    } else {
+      db[room].turn += 1;
+    }
+    io.to(room).emit('update-state', db[room]);
   });
 
   //holy shit this is embarrassing
