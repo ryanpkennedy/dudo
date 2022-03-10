@@ -33,6 +33,7 @@ interface GameState {
   turn: number;
   dice?: Dice;
   phase?: string;
+  lastBid?: { amount: number; face: number };
 }
 
 interface GameContext {
@@ -60,6 +61,8 @@ const GameContextProvider = ({ children }: { children: ReactNode }) => {
         users: state.users,
         open: state.open,
         turn: state.turn,
+        dice: state.dice,
+        lastBid: state.lastBid,
       });
     });
 

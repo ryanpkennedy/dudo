@@ -1,23 +1,28 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { GameContext } from '../../Context/GameContext';
 import { PlayerContext } from '../../Context/PlayerContext';
 import Avatar from '../../atoms/Avatar';
 import * as sc from './styled';
-import { Socket } from 'socket.io-client';
 import { SocketContext } from '../../Context/SocketProvider';
+import BidWindow from '../../components/BidWindow';
+import DudoButton from '../../components/DudoButton';
 
 const Game = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
+  const [bid, setBid] = useState({ amount: null, face: null });
+  const [bidWindow, setBidWindow] = useState(false);
 
   const [diceArray, setDiceArray] = useState<number[]>(
     gameState.users[playerState.username!].currentDice
   );
 
+  useEffect(() => {
+    setDiceArray(gameState.users[playerState.username!].currentDice);
+  }, [gameState]);
+
   let usersArray = Object.getOwnPropertyNames(gameState?.users);
-  console.log('(Game) users array: ', usersArray[gameState.turn]);
-  console.log('(Game) playstate.username: ', playerState.username);
 
   const handleRoll = () => {
     console.log('rolling dice');
@@ -36,11 +41,6 @@ const Game = () => {
       roll: tempDice,
     });
     console.log('resulting dice array: ', diceArray);
-  };
-
-  const handleBid = () => {
-    socket.emit('check-dudo');
-    socket.emit('increment-turn', { room: playerState.room });
   };
 
   return (
@@ -64,13 +64,8 @@ const Game = () => {
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
-          <sc.Button
-            onClick={() => {
-              handleBid();
-            }}>
-            Bid
-          </sc.Button>
-          <sc.Button>Dudo</sc.Button>
+          <BidWindow></BidWindow>
+          <DudoButton></DudoButton>
           <sc.Button>Even</sc.Button>
         </sc.ActionsContainer>
       ) : (

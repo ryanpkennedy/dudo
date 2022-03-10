@@ -9,7 +9,6 @@ const Lobby = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
-  // @ts-ignore
   const userArray = Object.getOwnPropertyNames(gameState?.users);
 
   const handleLogout = () => {

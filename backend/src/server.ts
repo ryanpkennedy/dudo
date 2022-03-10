@@ -5,43 +5,23 @@ const io = new Server({ cors: { origin: '*' } });
 
 interface User {
   avatarSelection: string;
-  diceRemaining?: number;
+  diceRemaining: number;
   currentDice: number[];
   roomLeader?: boolean;
 }
 
 interface room {
-  dice?: {};
+  dice: { [key: number]: number };
   open?: boolean;
   users: { [key: string]: User };
   turn: number;
+  lastBid: { amount: number; face: number };
 }
 
 let maxRoomSize = 8;
 let minRoomSize = 2;
 
-let db: { [key: string]: room } = {
-  ASDF: {
-    open: true,
-    turn: 0,
-    users: {
-      Ryan: {
-        avatarSelection: 'male',
-        currentDice: [],
-      },
-      Bob: {
-        avatarSelection: 'female',
-        currentDice: [],
-      },
-      Joe: {
-        avatarSelection: 'male',
-        currentDice: [],
-      },
-    },
-  },
-  JFJF: { users: {}, turn: 0 },
-  ROOM: { users: {}, turn: 0 },
-};
+let db: { [key: string]: room } = {};
 
 let activeConnections: { [key: string]: {} } = {};
 
@@ -56,7 +36,7 @@ const countDice = (room: string) => {
   }
 
   if (!allUsersRolled) {
-    console.log('waiting for other users to role');
+    db[room].dice = {};
   } else {
     let newDice: { [key: number]: number } = {
       1: 0,
@@ -134,7 +114,13 @@ io.on('connection', async (socket) => {
         callback({ status: 'username taken' });
       } else {
         if (!db[user.room]) {
-          db[user.room] = { open: true, users: {}, turn: 0 };
+          db[user.room] = {
+            open: true,
+            users: {},
+            turn: 0,
+            dice: {},
+            lastBid: { amount: 0, face: 0 },
+          };
           // this means this is the first user for this room, so make them the party leader
           newUser.roomLeader = true;
         }
@@ -178,6 +164,37 @@ io.on('connection', async (socket) => {
     db[room]['users'][username].currentDice = roll;
     countDice(room);
     io.to(room).emit('update-state', db[room]);
+  });
+
+  socket.on('place-bid', ({ bid, room }) => {
+    db[room].lastBid = bid;
+    io.to(room).emit('update-state', db[room]);
+  });
+
+  socket.on('dudo', ({ room }) => {
+    if (db[room]) {
+      let bidAmount = db[room].lastBid.amount;
+      let bidFace = db[room].lastBid.face;
+      let roomAmount = db[room].dice[bidFace!];
+      let usersArray = Object.getOwnPropertyNames(db[room]['users']);
+      if (bidAmount! <= roomAmount) {
+        // person who called dudo loses die
+        let loser = usersArray[db[room].turn];
+        db[room]['users'][loser].diceRemaining -= 1;
+      } else {
+        // person who made last bid loses die
+        db[room].turn =
+          db[room].turn === 0 ? usersArray.length - 1 : db[room].turn - 1;
+        let loser = usersArray[db[room].turn];
+        db[room]['users'][loser].diceRemaining -= 1;
+      }
+      // reset everyones dice for the next round
+      for (let k of usersArray) {
+        db[room]['users'][k].currentDice = [];
+      }
+      db[room].lastBid = { amount: 0, face: 0 };
+      io.to(room).emit('update-state', db[room]);
+    }
   });
 
   socket.on('increment-turn', ({ room }) => {
