@@ -38,11 +38,12 @@ interface GameState {
 
 interface GameContext {
   gameState: GameState;
-  setGameState?: Dispatch<SetStateAction<GameState>>;
+  setGameState: Dispatch<SetStateAction<GameState>>;
 }
 
 export const GameContext = React.createContext<GameContext>({
   gameState: { users: {}, turn: 0 },
+  setGameState: () => true,
 });
 
 const GameContextProvider = ({ children }: { children: ReactNode }) => {
@@ -52,26 +53,6 @@ const GameContextProvider = ({ children }: { children: ReactNode }) => {
     users: {},
     turn: 0,
   });
-
-  useEffect(() => {
-    socket.on('update-state', (state) => {
-      console.log('(GameContext) update-state called');
-      setGameState({
-        ...gameState,
-        users: state.users,
-        open: state.open,
-        turn: state.turn,
-        dice: state.dice,
-        lastBid: state.lastBid,
-      });
-    });
-
-    socket.on('next-turn', () => {
-      console.log('(Game Context) next turn event received');
-      let oldTurn = gameState.turn;
-      setGameState({ ...gameState, turn: oldTurn + 1 });
-    });
-  }, []);
 
   return (
     <GameContext.Provider value={{ gameState, setGameState }}>

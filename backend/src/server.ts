@@ -11,10 +11,11 @@ interface User {
 }
 
 interface room {
-  dice: { [key: number]: number };
   open?: boolean;
   users: { [key: string]: User };
   turn: number;
+  dice: { [key: number]: number };
+  phase: 'bid' | 'results';
   lastBid: { amount: number; face: number };
 }
 
@@ -121,6 +122,7 @@ io.on('connection', async (socket) => {
             users: {},
             turn: 0,
             dice: {},
+            phase: 'bid',
             lastBid: { amount: 0, face: 0 },
           };
           // this means this is the first user for this room, so make them the party leader
@@ -195,8 +197,14 @@ io.on('connection', async (socket) => {
         db[room]['users'][k].currentDice = [];
       }
       db[room].lastBid = { amount: 0, face: 0 };
+      db[room].phase = 'results';
       io.to(room).emit('update-state', db[room]);
     }
+  });
+
+  socket.on('next-round', ({ room }) => {
+    db[room].phase = 'bid';
+    io.to(room).emit('update-state', db[room]);
   });
 
   socket.on('increment-turn', ({ room }) => {
