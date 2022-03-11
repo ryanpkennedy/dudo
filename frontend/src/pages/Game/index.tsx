@@ -7,13 +7,13 @@ import { SocketContext } from '../../Context/SocketProvider';
 import BidWindow from '../../components/BidWindow';
 import DudoButton from '../../components/DudoButton';
 import Dice from '../../components/Dice';
+import Cup from '../../atoms/Cup';
 
 const Game = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
-  const [bid, setBid] = useState({ amount: null, face: null });
-  const [bidWindow, setBidWindow] = useState(false);
+  const [showDice, setShowDice] = useState(false);
 
   const [diceArray, setDiceArray] = useState<number[]>(
     gameState.users[playerState.username!].currentDice
@@ -48,6 +48,23 @@ const Game = () => {
     console.log('resulting dice array: ', diceArray);
   };
 
+  const diceCup =
+    diceArray.length > 0 ? (
+      <sc.DiceCupContainer>
+        <sc.CupContainer
+          onClick={() => {
+            setShowDice((prev) => !prev);
+          }}
+          showDice={showDice}>
+          <Cup></Cup>
+        </sc.CupContainer>
+
+        <Dice dice={diceArray}></Dice>
+      </sc.DiceCupContainer>
+    ) : (
+      <></>
+    );
+
   return (
     <>
       Game
@@ -61,7 +78,7 @@ const Game = () => {
       ) : (
         <></>
       )}
-      {diceArray.length > 0 && <Dice dice={diceArray}></Dice>}
+      {diceCup}
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>

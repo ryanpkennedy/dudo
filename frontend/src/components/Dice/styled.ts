@@ -5,8 +5,10 @@ export const DiceContainer = styled.div`
   width: 500px; */
 
   display: flex;
+  position: absolute;
+  bottom: 50px;
+  left: 0;
   /* border: 1px solid blue; */
-  padding: 50px;
 `;
 
 export const FirstDice = styled.div`
