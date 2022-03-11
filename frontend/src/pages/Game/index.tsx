@@ -5,6 +5,7 @@ import Results from '../Results';
 
 const Game = () => {
   const { playerState, setPlayerState } = useContext(PlayerContext);
+  console.log('(Game) playerState.phase: ', playerState.phase);
   return (
     <>
       {playerState.phase === 'bid' ? <Bid></Bid> : <Results></Results>}
