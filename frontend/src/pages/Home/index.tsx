@@ -32,12 +32,15 @@ const Home = React.memo(() => {
 
   return (
     <>
-      <sc.HomeContainer>
-        {id ? <Room></Room> : <Login></Login>}
-        <div>gameState: {JSON.stringify(gameState)}</div>
-        <div>playerState: {JSON.stringify(playerState)}</div>
-        <div>id: {id ? id : ''}</div>
-      </sc.HomeContainer>
+      <sc.AppContainer>
+        <sc.HomeContainer>
+          <sc.Title>Dudo</sc.Title>
+          {id ? <Room></Room> : <Login></Login>}
+        </sc.HomeContainer>
+      </sc.AppContainer>
+      <div>gameState: {JSON.stringify(gameState)}</div>
+      <div>playerState: {JSON.stringify(playerState)}</div>
+      <div>id: {id ? id : ''}</div>
     </>
   );
 });

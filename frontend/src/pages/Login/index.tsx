@@ -11,7 +11,7 @@ const Login = () => {
   const { socket } = useContext(SocketContext);
   const [avatarSelection, setAvatarSelection] = useState<
     'male' | 'female' | undefined
-  >();
+  >('male');
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
 
@@ -21,6 +21,7 @@ const Login = () => {
 
   const handleUsername = (e: any) => {
     let usernameVal = e.target.value.replace(' ', '');
+    usernameVal = usernameVal.toUpperCase();
     if (usernameVal.length > 10) {
       usernameVal = usernameVal.slice(0, 10);
     }
@@ -29,6 +30,7 @@ const Login = () => {
 
   const handleRoom = (e: any) => {
     let roomVal = e.target.value.replace(' ', '');
+    roomVal = roomVal.toUpperCase();
     if (roomVal.length > 8) {
       roomVal = roomVal.slice(0, 8);
     }
@@ -74,14 +76,16 @@ const Login = () => {
 
   return (
     <>
-      <div>Enter Username</div>
-      <sc.LoginInput
-        onChange={(e) => {
-          handleUsername(e);
-        }}
-        value={username}></sc.LoginInput>
+      <sc.InputContainer>
+        <sc.InputField>Username</sc.InputField>
+        <sc.InputValue
+          onChange={(e) => {
+            handleUsername(e);
+          }}
+          value={username}></sc.InputValue>
+      </sc.InputContainer>
 
-      <div>Select Avatar</div>
+      {/* <div>Select Avatar</div>
       <sc.AvatarSelectionContainer>
         <sc.AvatarContainer
           selected={avatarSelection === 'male'}
@@ -93,20 +97,21 @@ const Login = () => {
           onClick={() => selectAvatar('female')}>
           <Female></Female>
         </sc.AvatarContainer>
-      </sc.AvatarSelectionContainer>
-
-      <div>Enter Room Name</div>
-      <sc.LoginInput
-        onChange={(e) => {
-          handleRoom(e);
-        }}
-        value={room}></sc.LoginInput>
+      </sc.AvatarSelectionContainer> */}
+      <sc.InputContainer>
+        <sc.InputField>Room Name</sc.InputField>
+        <sc.InputValue
+          onChange={(e) => {
+            handleRoom(e);
+          }}
+          value={room}></sc.InputValue>
+      </sc.InputContainer>
 
       <sc.SubmitButton
         onClick={() => {
           handleSubmit();
         }}>
-        submit
+        Join
       </sc.SubmitButton>
     </>
   );
