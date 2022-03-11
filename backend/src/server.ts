@@ -48,7 +48,9 @@ const countDice = (room: string) => {
     };
     for (let user of usersArray) {
       for (let i of db[room].users[user].currentDice) {
-        newDice[i] += 1;
+        if (i !== 0) {
+          newDice[i] += 1;
+        }
       }
     }
     db[room].dice = newDice;

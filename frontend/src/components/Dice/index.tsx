@@ -15,8 +15,16 @@ interface DiceProps {
 }
 
 const Dice: React.FC<DiceProps> = ({ dice }) => {
-  let firstDice = dice.slice(0, 3);
-  let secondDice = dice.slice(3, 6);
+  let newDice = [...dice];
+  let firstDice: number[] = [];
+  let secondDice: number[] = [];
+  while (newDice.length > 0) {
+    //@ts-ignore
+    firstDice.push(newDice.shift());
+    //@ts-ignore
+    secondDice.push(newDice.shift());
+  }
+
   return (
     <sc.DiceContainer>
       <sc.FirstDice>

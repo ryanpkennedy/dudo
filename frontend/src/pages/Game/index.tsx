@@ -36,11 +36,15 @@ const Game = () => {
       let dieValue = Math.floor(Math.random() * 6) + 1;
       tempDice.push(dieValue);
     }
+    while (tempDice.length < 6) {
+      tempDice.push(0);
+    }
     setDiceArray([...tempDice]);
     socket.emit('user-roll', {
       id: localStorage.getItem('id'),
       roll: tempDice,
     });
+
     console.log('resulting dice array: ', diceArray);
   };
 
@@ -57,7 +61,7 @@ const Game = () => {
       ) : (
         <></>
       )}
-      <Dice dice={diceArray}></Dice>
+      {diceArray.length > 0 && <Dice dice={diceArray}></Dice>}
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
