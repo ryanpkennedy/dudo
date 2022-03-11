@@ -6,6 +6,7 @@ import * as sc from './styled';
 import { SocketContext } from '../../Context/SocketProvider';
 import BidWindow from '../../components/BidWindow';
 import DudoButton from '../../components/DudoButton';
+import Dice from '../../components/Dice';
 
 const Game = () => {
   const { gameState, setGameState } = useContext(GameContext);
@@ -56,11 +57,7 @@ const Game = () => {
       ) : (
         <></>
       )}
-      <sc.DiceContainer>
-        {diceArray.map((num) => {
-          return <sc.Die key={Math.random()}>{num}</sc.Die>;
-        })}
-      </sc.DiceContainer>
+      <Dice dice={diceArray}></Dice>
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
