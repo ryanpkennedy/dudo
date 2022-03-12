@@ -6,8 +6,8 @@ export const DiceContainer = styled.div`
   width: 100%;
   display: flex;
   position: absolute;
-  bottom: 50px;
-  left: 0;
+  bottom: 90px;
+  left: 15px;
   /* border: 1px solid blue; */
 `;
 
@@ -21,8 +21,8 @@ export const FirstDice = styled.div`
 
 export const SecondDice = styled.div`
   position: relative;
-  top: -15px;
-  left: -25px;
+  top: -20px;
+  left: -13px;
   /* border: 1px solid red; */
   height: 30px;
   width: 50px;
@@ -30,9 +30,9 @@ export const SecondDice = styled.div`
 `;
 
 export const DieContainer = styled('div')<{ offset: number }>`
-  height: 50px;
-  width: 50px;
+  height: 70px;
+  width: 70px;
   position: absolute;
   transform: ${(props) =>
-    `translate(${props.offset * 25}px, ${props.offset * 15}px)`};
+    `translate(${props.offset * 36}px, ${props.offset * 22}px)`};
 `;

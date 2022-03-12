@@ -202,6 +202,12 @@ io.on('connection', async (socket) => {
     }
   });
 
+  socket.on('even', ({ room }) => {
+    if (db[room]) {
+      console.log('check even');
+    }
+  });
+
   socket.on('next-round', ({ room }) => {
     db[room].phase = 'bid';
     io.to(room).emit('update-state', db[room]);

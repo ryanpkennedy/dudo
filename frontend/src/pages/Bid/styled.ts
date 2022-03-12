@@ -30,8 +30,9 @@ export const Button = styled.div`
 `;
 
 export const ActionsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, auto);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export const DiceCupContainer = styled.div`
