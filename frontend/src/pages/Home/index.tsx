@@ -38,9 +38,15 @@ const Home = React.memo(() => {
           {id ? <Room></Room> : <Login></Login>}
         </sc.HomeContainer>
       </sc.AppContainer>
-      <div>gameState: {JSON.stringify(gameState)}</div>
-      <div>playerState: {JSON.stringify(playerState)}</div>
-      <div>id: {id ? id : ''}</div>
+      <div style={{ fontSize: '14px' }}>
+        <div style={{ fontSize: '14px' }}>
+          gameState: {JSON.stringify(gameState)}
+        </div>
+        <div style={{ fontSize: '14px' }}>
+          playerState: {JSON.stringify(playerState)}
+        </div>
+        <div style={{ fontSize: '14px' }}>id: {id ? id : ''}</div>
+      </div>
     </>
   );
 });

@@ -5,6 +5,7 @@ import Female from '../../atoms/Avatar/Female';
 import { GameContext } from '../../Context/GameContext';
 import { SocketContext } from '../../Context/SocketProvider';
 import { PlayerContext } from '../../Context/PlayerContext';
+import CoverPic from '../../atoms/CoverPic';
 
 const Login = () => {
   const { playerState, setPlayerState } = useContext(PlayerContext);
@@ -76,6 +77,9 @@ const Login = () => {
 
   return (
     <>
+      <sc.CoverPicContainer>
+        <CoverPic></CoverPic>
+      </sc.CoverPicContainer>
       <sc.InputContainer>
         <sc.InputField>Username</sc.InputField>
         <sc.InputValue

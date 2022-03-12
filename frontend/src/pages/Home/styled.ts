@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const HomeContainer = styled.div`
   max-width: 650px;
   margin: auto;
-  padding: 64px;
+  padding: 16px;
   border: 1px solid blue;
 `;
 
@@ -18,4 +18,5 @@ export const AppContainer = styled.div`
 export const Title = styled.div`
   display: flex;
   justify-content: center;
+  font-size: 28px;
 `;

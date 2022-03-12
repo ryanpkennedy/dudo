@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 
+export const CoverPicContainer = styled.div`
+  width: 200px;
+  margin: 16px auto;
+`;
+
 export const InputContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 16px;
+  margin: 16px 0;
   /* flex-direction: column; */
   align-items: center;
 `;
