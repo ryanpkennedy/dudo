@@ -34,7 +34,6 @@ const Home = React.memo(() => {
     <>
       <sc.AppContainer>
         <sc.HomeContainer>
-          <sc.Title>Dudo</sc.Title>
           {id ? <Room></Room> : <Login></Login>}
         </sc.HomeContainer>
       </sc.AppContainer>

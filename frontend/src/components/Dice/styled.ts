@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const DiceContainer = styled.div`
   /* height: 250px;
   width: 500px; */
-
+  width: 100%;
   display: flex;
   position: absolute;
   bottom: 50px;

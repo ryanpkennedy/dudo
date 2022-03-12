@@ -24,7 +24,6 @@ const Lobby = () => {
 
   return (
     <div>
-      Lobby
       <div style={{ margin: '48px' }}>Room: {playerState?.room}</div>
       {userArray.map((user: any) => {
         return (
@@ -41,7 +40,7 @@ const Lobby = () => {
             ) : (
               <></>
             )}
-            <Avatar type={gameState?.users[user].avatarSelection}></Avatar>
+            {/* <Avatar type={gameState?.users[user].avatarSelection}></Avatar> */}
           </sc.UserContainer>
         );
       })}

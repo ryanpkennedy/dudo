@@ -35,19 +35,28 @@ export const ActionsContainer = styled.div`
 `;
 
 export const DiceCupContainer = styled.div`
-  height: 150px;
-  width: 150px;
+  /* width: 80%; */
+  width: 200px;
+  height: 400px;
+  margin: auto;
   position: relative;
-  padding: 32px;
+  display: flex;
+  justify-content: center;
 `;
 
 export const CupContainer = styled('div')<{ showDice: boolean }>`
   /* height: 100px; */
   position: absolute;
-  width: 120px;
+  width: 100%;
   z-index: 3;
   bottom: -10px;
   left: 3px;
   transition: all 1s ease;
-  ${(props) => (props.showDice ? 'transform: translateY(-100px);' : '')}
+  ${(props) => (props.showDice ? 'transform: translateY(-150px);' : '')}
+`;
+
+export const CupUpContainer = styled.div`
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 `;

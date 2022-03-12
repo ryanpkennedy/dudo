@@ -6,12 +6,7 @@ import Results from '../Results';
 const Game = () => {
   const { playerState, setPlayerState } = useContext(PlayerContext);
   console.log('(Game) playerState.phase: ', playerState.phase);
-  return (
-    <>
-      {playerState.phase === 'bid' ? <Bid></Bid> : <Results></Results>}
-      <div>Game</div>
-    </>
-  );
+  return <>{playerState.phase === 'bid' ? <Bid></Bid> : <Results></Results>}</>;
 };
 
 export default Game;

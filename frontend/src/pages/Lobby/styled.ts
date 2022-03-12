@@ -5,6 +5,8 @@ export const UserContainer = styled.div`
   border-radius: 8px;
   padding: 16px;
   margin: 8px;
+  display: flex;
+  align-items: center;
 `;
 
 export const LogoutButton = styled.div`
@@ -17,7 +19,7 @@ export const LogoutButton = styled.div`
 
 export const StartButton = styled.div`
   padding: 8px;
-  margin: 16px;
+  margin-left: 16px;
   border-radius: 8px;
   border: 1px solid gray;
   cursor: pointer;

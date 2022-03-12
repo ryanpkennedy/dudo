@@ -7,6 +7,7 @@ import BidWindow from '../../components/BidWindow';
 import DudoButton from '../../components/DudoButton';
 import Dice from '../../components/Dice';
 import Cup from '../../atoms/Cup';
+import CupUp from '../../atoms/CupUp';
 
 const Bid = () => {
   const { gameState, setGameState } = useContext(GameContext);
@@ -61,7 +62,11 @@ const Bid = () => {
         <Dice dice={diceArray}></Dice>
       </sc.DiceCupContainer>
     ) : (
-      <></>
+      <sc.DiceCupContainer>
+        <sc.CupUpContainer>
+          <CupUp></CupUp>
+        </sc.CupUpContainer>
+      </sc.DiceCupContainer>
     );
 
   return (
