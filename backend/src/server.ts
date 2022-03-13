@@ -165,14 +165,18 @@ io.on('connection', async (socket) => {
     let idArray = id.split('_');
     let room = idArray[0];
     let username = idArray[1];
-    db[room]['users'][username].currentDice = roll;
-    countDice(room);
-    io.to(room).emit('update-state', db[room]);
+    if (db[room]) {
+      db[room]['users'][username].currentDice = roll;
+      countDice(room);
+      io.to(room).emit('update-state', db[room]);
+    }
   });
 
   socket.on('place-bid', ({ bid, room }) => {
-    db[room].lastBid = bid;
-    io.to(room).emit('update-state', db[room]);
+    if (db[room]) {
+      db[room].lastBid = bid;
+      io.to(room).emit('update-state', db[room]);
+    }
   });
 
   socket.on('dudo', ({ room }) => {
@@ -209,18 +213,22 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('next-round', ({ room }) => {
-    db[room].phase = 'bid';
-    io.to(room).emit('update-state', db[room]);
+    if (db[room]) {
+      db[room].phase = 'bid';
+      io.to(room).emit('update-state', db[room]);
+    }
   });
 
   socket.on('increment-turn', ({ room }) => {
-    let roomSize = Object.getOwnPropertyNames(db[room]['users']).length - 1;
-    if (db[room].turn === roomSize) {
-      db[room].turn = 0;
-    } else {
-      db[room].turn += 1;
+    if (db[room]) {
+      let roomSize = Object.getOwnPropertyNames(db[room]['users']).length - 1;
+      if (db[room].turn === roomSize) {
+        db[room].turn = 0;
+      } else {
+        db[room].turn += 1;
+      }
+      io.to(room).emit('update-state', db[room]);
     }
-    io.to(room).emit('update-state', db[room]);
   });
 
   //holy shit this is embarrassing

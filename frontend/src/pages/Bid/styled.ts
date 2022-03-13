@@ -1,5 +1,22 @@
 import styled from 'styled-components';
 
+export const TurnContainer = styled.div`
+  position: relative;
+  width: 300px;
+  margin: auto;
+`;
+
+export const TurnString = styled.div`
+  color: white;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  bottom: 45px;
+  text-align: center;
+`;
+
 export const RollButton = styled.div`
   padding: 8px;
   margin: 16px;
@@ -38,7 +55,7 @@ export const ActionsContainer = styled.div`
 export const DiceCupContainer = styled.div`
   /* width: 80%; */
   width: 200px;
-  height: 400px;
+  height: 300px;
   margin: auto;
   position: relative;
   display: flex;

@@ -9,6 +9,7 @@ import EvenButton from '../../components/EvenButton';
 import Dice from '../../components/Dice';
 import Cup from '../../atoms/Cup';
 import CupUp from '../../atoms/CupUp';
+import Banner from '../../atoms/Banner';
 
 const Bid = () => {
   const { gameState, setGameState } = useContext(GameContext);
@@ -86,10 +87,22 @@ const Bid = () => {
       <></>
     );
 
+  const turnElement = (
+    <sc.TurnContainer>
+      <Banner></Banner>
+      <sc.TurnString>
+        {playerState?.username === usersArray[gameState.turn]
+          ? 'Your turn'
+          : `${usersArray[gameState.turn]}'s turn`}
+      </sc.TurnString>
+    </sc.TurnContainer>
+  );
+
   return (
     <>
-      Bid Phase
       {lastBidElement}
+      {turnElement}
+      {diceCup}
       {diceArray.length === 0 ? (
         <sc.RollButton
           onClick={() => {
@@ -100,7 +113,6 @@ const Bid = () => {
       ) : (
         <></>
       )}
-      {diceCup}
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
@@ -109,7 +121,7 @@ const Bid = () => {
           <EvenButton></EvenButton>
         </sc.ActionsContainer>
       ) : (
-        <>{`${usersArray[gameState.turn]}'s turn`}</>
+        <></>
       )}
       {showHint && diceArray.length > 0 ? (
         <sc.Hint>tap cup to reveal dice</sc.Hint>

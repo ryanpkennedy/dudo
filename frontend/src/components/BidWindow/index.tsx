@@ -60,37 +60,39 @@ const BidWindow = () => {
   };
 
   let bidWindowElement = (
-    <sc.BidWindow>
-      <div>
-        <div>Amount</div>
-        <input
-          value={bid.amount || ''}
-          onChange={(e) => {
-            updateBid('amount', e.target.value);
-          }}
-        />
-      </div>
-      <div>
-        <div>Face</div>
-        <select
-          onChange={(e) => {
-            updateBid('face', e.target.value);
+    <sc.BidWindowContainer>
+      <sc.BidWindow>
+        <div>
+          <div>Amount</div>
+          <input
+            value={bid.amount || ''}
+            onChange={(e) => {
+              updateBid('amount', e.target.value);
+            }}
+          />
+        </div>
+        <div>
+          <div>Face</div>
+          <select
+            onChange={(e) => {
+              updateBid('face', e.target.value);
+            }}>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+          </select>
+        </div>
+        <sc.Button
+          onClick={() => {
+            toggleBidWindow();
           }}>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
-        </select>
-      </div>
-      <sc.Button
-        onClick={() => {
-          toggleBidWindow();
-        }}>
-        Enter
-      </sc.Button>
-    </sc.BidWindow>
+          Enter
+        </sc.Button>
+      </sc.BidWindow>
+    </sc.BidWindowContainer>
   );
 
   return (
