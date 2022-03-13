@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { GameContext } from '../../Context/GameContext';
 import { PlayerContext } from '../../Context/PlayerContext';
 import { SocketContext } from '../../Context/SocketProvider';
+import * as sc from './styled';
 
 const Results = () => {
   const { socket } = useContext(SocketContext);
@@ -15,11 +16,15 @@ const Results = () => {
   };
 
   return (
-    <>
-      <div>Results</div>
-      <div>{usersArray[gameState.turn]} lost a die!</div>
-      <div onClick={() => handleNextRound()}>Next Round</div>
-    </>
+    <sc.Results>
+      <sc.UserString>
+        {usersArray[gameState.turn] === playerState.username
+          ? 'You'
+          : usersArray[gameState.turn]}{' '}
+        lost a die!
+      </sc.UserString>
+      <sc.Button onClick={() => handleNextRound()}>Next Round</sc.Button>
+    </sc.Results>
   );
 };
 

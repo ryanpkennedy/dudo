@@ -61,3 +61,8 @@ export const CupUpContainer = styled.div`
   position: absolute;
   bottom: 0;
 `;
+
+export const Hint = styled.div`
+  text-align: center;
+  color: #686868;
+`;

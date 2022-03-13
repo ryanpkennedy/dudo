@@ -15,9 +15,10 @@ const Bid = () => {
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
   const [showDice, setShowDice] = useState(false);
+  const [showHint, setShowHint] = useState(true);
 
   const [diceArray, setDiceArray] = useState<number[]>(
-    gameState.users[playerState.username!].currentDice
+    gameState.users[playerState.username!].currentDice || []
   );
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const Bid = () => {
         <sc.CupContainer
           onClick={() => {
             setShowDice((prev) => !prev);
+            setShowHint(false);
           }}
           showDice={showDice}>
           <Cup></Cup>
@@ -108,6 +110,11 @@ const Bid = () => {
         </sc.ActionsContainer>
       ) : (
         <>{`${usersArray[gameState.turn]}'s turn`}</>
+      )}
+      {showHint && diceArray.length > 0 ? (
+        <sc.Hint>tap cup to reveal dice</sc.Hint>
+      ) : (
+        <></>
       )}
     </>
   );

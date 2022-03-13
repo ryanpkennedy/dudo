@@ -5,10 +5,11 @@ export const BidWindow = styled.div`
   top: 150px;
   width: 250px;
   height: 300px;
-  border: 2px solid black;
   background: white;
   padding: 16px;
   z-index: 5;
+  box-shadow: 0 0 100px black;
+  border-radius: 8px;
 `;
 
 export const Button = styled.div`
