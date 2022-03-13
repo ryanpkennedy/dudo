@@ -117,8 +117,8 @@ const Bid = () => {
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
           <BidWindow></BidWindow>
-          <DudoButton></DudoButton>
-          <EvenButton></EvenButton>
+          {gameState.lastBid?.amount !== 0 ? <DudoButton></DudoButton> : <></>}
+          {gameState.lastBid?.amount !== 0 ? <EvenButton></EvenButton> : <></>}
         </sc.ActionsContainer>
       ) : (
         <></>
