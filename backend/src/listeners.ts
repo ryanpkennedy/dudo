@@ -74,7 +74,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     let idArray = socket.handshake.query.id.split('_');
     let room = idArray[0];
     if (db[room]) {
-      console.log(`joining room ${room}`);
+      console.log(`joining room ${room} from localStorage id`);
       console.log(`current people in room ${room}`, db[room].users);
       socket.join(room);
     }

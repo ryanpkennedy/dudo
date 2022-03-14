@@ -57,3 +57,10 @@ Generalize 'update-state' function. So you can emit from wherever with universal
 3/13/21
 Need to move 'db' which is just node object database, which will never actually remove rooms, to a redis based db
 
+Dockerfile
+
+- serve react frontend on one port- https://create-react-app.dev/docs/deployment/
+    > npm install -g serve
+    > serve -s build
+
+- serve socket.io backend on other port

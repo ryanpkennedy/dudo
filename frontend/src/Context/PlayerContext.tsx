@@ -50,6 +50,7 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         phase: state.phase,
         lastBid: state.lastBid,
       });
+      console.log('playerState from update-state event: ', playerState);
       setPlayerState({ ...playerState, phase: state.phase });
     });
 

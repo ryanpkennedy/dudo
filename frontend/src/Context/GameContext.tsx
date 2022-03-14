@@ -47,7 +47,6 @@ export const GameContext = React.createContext<GameContext>({
 });
 
 const GameContextProvider = ({ children }: { children: ReactNode }) => {
-  const { socket } = useContext(SocketContext);
   const [gameState, setGameState] = useState<GameState>({
     open: true,
     users: {},
