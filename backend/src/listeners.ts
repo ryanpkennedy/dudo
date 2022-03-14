@@ -1,4 +1,7 @@
 import { Socket } from 'socket.io';
+//every listener is wrapped in a try catch since there is no built in error handling in socket io. Not sure if this could be done in a better way
+//basically just don't want the server to crash if there is an error, so want to instead gracefully log the error
+//https://socket.io/docs/v4/listening-to-events/#error-handling
 
 interface User {
   avatarSelection: string;
@@ -79,16 +82,21 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   console.log('Socket ID: \n', socket.id);
 
   socket.on('get-state', ({ id }, callback) => {
-    let idArray = id.split('_');
-    let room = idArray[0];
-    //verify that room exists and username exists in room
-    if (db[room] && db[room]['users'][idArray[1]]) {
-      socket.join(room);
-      console.log('update state called from get-state listener');
-      io.to(room).emit('update-state', db[room]);
-      callback({ status: '200' });
-    } else {
-      callback({ status: `user-room combo does not exist` });
+    try {
+      let idArray = id.split('_');
+      let room = idArray[0];
+      //verify that room exists and username exists in room
+      if (db[room] && db[room]['users'][idArray[1]]) {
+        socket.join(room);
+        console.log('update state called from get-state listener');
+        io.to(room).emit('update-state', db[room]);
+        callback({ status: '200' });
+      } else {
+        callback({ status: `user-room combo does not exist` });
+      }
+    } catch (err) {
+      callback({ status: 'get-state listener error' });
+      console.log('get-state listener error: ', err);
     }
   });
 
@@ -102,141 +110,178 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       },
       callback
     ) => {
-      let newUser: User = {
-        avatarSelection: user.avatarSelection,
-        diceRemaining: 6,
-        currentDice: [],
-        roomLeader: false,
-      };
+      try {
+        let newUser: User = {
+          avatarSelection: user.avatarSelection,
+          diceRemaining: 6,
+          currentDice: [],
+          roomLeader: false,
+        };
 
-      //if room exists. If so is it open? If not, send back closed response. Is username taken? If so, send response. If room doesn't exist, create room
-      if (db[user.room] && !db[user.room].open) {
-        callback({ status: 'room closed' });
-      } else if (db[user.room] && db[user.room]['users'][user.username]) {
-        callback({ status: 'username taken' });
-      } else {
-        if (!db[user.room]) {
-          db[user.room] = {
-            open: true,
-            users: {},
-            turn: 0,
-            dice: {},
-            phase: 'bid',
-            lastBid: { amount: 0, face: 0 },
-          };
-          // this means this is the first user for this room, so make them the party leader
-          newUser.roomLeader = true;
-        }
-
-        let usersArray = Object.getOwnPropertyNames(db[user.room].users);
-
-        //check if the room is full
-        if (usersArray.length === maxRoomSize) {
-          console.log('room is full');
-          callback({ status: 'room is full' });
+        //if room exists. If so is it open? If not, send back closed response. Is username taken? If so, send response. If room doesn't exist, create room
+        if (db[user.room] && !db[user.room].open) {
+          callback({ status: 'room closed' });
+        } else if (db[user.room] && db[user.room]['users'][user.username]) {
+          callback({ status: 'username taken' });
         } else {
-          socket.join(user.room);
-          db[user.room].users = {
-            ...db[user.room].users,
-            [user.username]: newUser,
-          };
-          // const clients = io.sockets.adapter.rooms.get('R');
+          if (!db[user.room]) {
+            db[user.room] = {
+              open: true,
+              users: {},
+              turn: 0,
+              dice: {},
+              phase: 'bid',
+              lastBid: { amount: 0, face: 0 },
+            };
+            // this means this is the first user for this room, so make them the party leader
+            newUser.roomLeader = true;
+          }
 
-          console.log(`all users in room ${user.room}`, db[user.room].users);
-          console.log('update state called from login listener');
-          io.to(user.room).emit('update-state', db[user.room]);
-          callback({ status: '200' });
+          let usersArray = Object.getOwnPropertyNames(db[user.room].users);
+
+          //check if the room is full
+          if (usersArray.length === maxRoomSize) {
+            console.log('room is full');
+            callback({ status: 'room is full' });
+          } else {
+            socket.join(user.room);
+            db[user.room].users = {
+              ...db[user.room].users,
+              [user.username]: newUser,
+            };
+            // const clients = io.sockets.adapter.rooms.get('R');
+
+            console.log(`all users in room ${user.room}`, db[user.room].users);
+            console.log('update state called from login listener');
+            io.to(user.room).emit('update-state', db[user.room]);
+            callback({ status: '200' });
+          }
         }
+      } catch (err) {
+        callback({ status: 'login listener error' });
+        console.log('login listener error: ', err);
       }
     }
   );
 
   socket.on('close-room', ({ room }) => {
-    console.log('close-room event received for room', room);
-    if (db[room]) {
-      db[room].open = false;
-      console.log('update state called from login listener');
-      io.to(room).emit('update-state', db[room]);
+    try {
+      console.log('close-room event received for room', room);
+      if (db[room]) {
+        db[room].open = false;
+        console.log('update state called from login listener');
+        io.to(room).emit('update-state', db[room]);
+      }
+    } catch (err) {
+      console.log('close-room listener error: ', err);
     }
   });
 
   socket.on('user-roll', ({ id, roll }) => {
-    let idArray = id.split('_');
-    let room = idArray[0];
-    let username = idArray[1];
-    if (db[room]) {
-      db[room]['users'][username].currentDice = roll;
-      countDice(room);
-      io.to(room).emit('update-state', db[room]);
+    try {
+      let idArray = id.split('_');
+      let room = idArray[0];
+      let username = idArray[1];
+      if (db[room]) {
+        db[room]['users'][username].currentDice = roll;
+        countDice(room);
+        io.to(room).emit('update-state', db[room]);
+      }
+    } catch (err) {
+      console.log('user-roll listener error: ', err);
     }
   });
 
   socket.on('place-bid', ({ bid, room }) => {
-    if (db[room]) {
-      db[room].lastBid = bid;
-      io.to(room).emit('update-state', db[room]);
+    try {
+      if (db[room]) {
+        db[room].lastBid = bid;
+        io.to(room).emit('update-state', db[room]);
+      }
+    } catch (err) {
+      console.log('place-bid listener error: ', err);
     }
   });
 
   socket.on('dudo', ({ room }) => {
-    if (db[room]) {
-      let bidAmount = db[room].lastBid.amount;
-      let bidFace = db[room].lastBid.face;
-      let roomAmount = db[room].dice[bidFace!];
-      let usersArray = Object.getOwnPropertyNames(db[room]['users']);
-      if (bidAmount! <= roomAmount) {
-        // person who called dudo loses die
-        let loser = usersArray[db[room].turn];
-        db[room]['users'][loser].diceRemaining -= 1;
-      } else {
-        // person who made last bid loses die
-        db[room].turn =
-          db[room].turn === 0 ? usersArray.length - 1 : db[room].turn - 1;
-        let loser = usersArray[db[room].turn];
-        db[room]['users'][loser].diceRemaining -= 1;
+    try {
+      if (db[room]) {
+        let bidAmount = db[room].lastBid.amount;
+        let bidFace = db[room].lastBid.face;
+        let roomAmount = db[room].dice[bidFace!];
+        let usersArray = Object.getOwnPropertyNames(db[room]['users']);
+        if (bidAmount! <= roomAmount) {
+          // person who called dudo loses die
+          let loser = usersArray[db[room].turn];
+          db[room]['users'][loser].diceRemaining -= 1;
+        } else {
+          // person who made last bid loses die
+          db[room].turn =
+            db[room].turn === 0 ? usersArray.length - 1 : db[room].turn - 1;
+          let loser = usersArray[db[room].turn];
+          db[room]['users'][loser].diceRemaining -= 1;
+        }
+        // reset everyones dice for the next round
+        for (let k of usersArray) {
+          db[room]['users'][k].currentDice = [];
+        }
+        db[room].lastBid = { amount: 0, face: 0 };
+        db[room].phase = 'results';
+        io.to(room).emit('update-state', db[room]);
       }
-      // reset everyones dice for the next round
-      for (let k of usersArray) {
-        db[room]['users'][k].currentDice = [];
-      }
-      db[room].lastBid = { amount: 0, face: 0 };
-      db[room].phase = 'results';
-      io.to(room).emit('update-state', db[room]);
+    } catch (err) {
+      console.log('dudo listener error: ', err);
     }
   });
 
   socket.on('even', ({ room }) => {
-    if (db[room]) {
-      console.log('check even');
+    try {
+      if (db[room]) {
+        console.log('check even');
+      }
+    } catch (err) {
+      console.log('even listener error: ', err);
     }
   });
 
   socket.on('next-round', ({ room }) => {
-    if (db[room]) {
-      db[room].phase = 'bid';
-      io.to(room).emit('update-state', db[room]);
+    try {
+      if (db[room]) {
+        db[room].phase = 'bid';
+        io.to(room).emit('update-state', db[room]);
+      }
+    } catch (err) {
+      console.log('next-round listener error: ', err);
     }
   });
 
   socket.on('increment-turn', ({ room }) => {
-    if (db[room]) {
-      let roomSize = Object.getOwnPropertyNames(db[room]['users']).length - 1;
-      if (db[room].turn === roomSize) {
-        db[room].turn = 0;
-      } else {
-        db[room].turn += 1;
+    try {
+      if (db[room]) {
+        let roomSize = Object.getOwnPropertyNames(db[room]['users']).length - 1;
+        if (db[room].turn === roomSize) {
+          db[room].turn = 0;
+        } else {
+          db[room].turn += 1;
+        }
+        io.to(room).emit('update-state', db[room]);
       }
-      io.to(room).emit('update-state', db[room]);
+    } catch (err) {
+      console.log('increment-turn listener error: ', err);
     }
   });
 
   //holy shit this is embarrassing
   socket.on('logout', ({ id }) => {
-    let idArray = id.split('_');
-    let room = idArray[0];
-    let oldId = idArray[1];
-    if (db[room] && db[room].users[oldId]) {
-      delete db[room].users[oldId];
+    try {
+      let idArray = id.split('_');
+      let room = idArray[0];
+      let oldId = idArray[1];
+      if (db[room] && db[room].users[oldId]) {
+        delete db[room].users[oldId];
+      }
+    } catch (err) {
+      console.log('logout listener error: ', err);
     }
   });
 };
