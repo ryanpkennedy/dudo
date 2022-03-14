@@ -5,13 +5,22 @@ export const HomeContainer = styled.div`
   min-width: 300px;
   margin: auto;
   padding: 16px;
-  border: 1px solid blue;
 `;
 
 export const AppContainer = styled.div`
   width: 100%;
-  border: 1px solid red;
   margin: 0;
   padding: 0;
   display: flex;
 `;
+
+export const StateButton = styled.div`
+  position: absolute;
+  bottom: 0;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin: 8px;
+  padding: 8px;
+`;
+
+export const StateView = styled.div``;
