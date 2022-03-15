@@ -2,17 +2,15 @@ import React, { useState, useContext } from 'react';
 import { GameContext } from '../../Context/GameContext';
 import { PlayerContext } from '../../Context/PlayerContext';
 import { SocketContext } from '../../Context/SocketProvider';
+import { DiceArray } from '../../atoms/DiceArray';
 import * as sc from './styled';
 
 const BidWindow = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
-  const [bid, setBid] = useState<{ amount: number; face: number }>({
-    amount: 0,
-    face: 0,
-  });
   const [bidWindow, setBidWindow] = useState(false);
+  const diceFaces = [1, 2, 3, 4, 5, 6];
 
   let usersArray = Object.getOwnPropertyNames(gameState?.users);
   console.log('(Game) users array: ', usersArray[gameState.turn]);
@@ -32,13 +30,17 @@ const BidWindow = () => {
   };
 
   const placeBid = () => {
-    socket.emit('place-bid', { bid: bid, room: playerState.room });
-    setBid({ amount: 0, face: 0 });
+    socket.emit('place-bid', {
+      bid: playerState.currentBid,
+      room: playerState.room,
+    });
+    let newPlayerState = { ...playerState, currentBid: { amount: 0, face: 0 } };
+    setPlayerState(newPlayerState);
     socket.emit('increment-turn', { room: playerState.room });
   };
 
   const toggleBidWindow = () => {
-    if (!bidWindow || (bidWindow && checkBid(bid))) {
+    if (!bidWindow || (bidWindow && checkBid(playerState.currentBid!))) {
       setBidWindow((prev) => !prev);
     } else {
       alert(
@@ -48,14 +50,19 @@ const BidWindow = () => {
   };
 
   const updateBid = (type: 'face' | 'amount', val: any) => {
+    console.log('(BidWindow) update bid');
     if (type === 'amount') {
       //only accept numbers up to 99
       const reg = new RegExp('^[0-9]{1,2}$|^$');
       if (reg.test(val)) {
-        setBid({ ...bid, amount: parseInt(val, 10) });
+        let newBid = { ...playerState.currentBid, amount: parseInt(val, 10) };
+        let newPlayerState = { ...playerState, currentBid: newBid };
+        setPlayerState(newPlayerState);
       }
     } else {
-      setBid({ ...bid, face: parseInt(val, 10) });
+      let newBid = { ...playerState.currentBid, face: parseInt(val, 10) };
+      let newPlayerState = { ...playerState, currentBid: newBid };
+      setPlayerState(newPlayerState);
     }
   };
 
@@ -65,7 +72,7 @@ const BidWindow = () => {
         <div>
           <div>Amount</div>
           <input
-            value={bid.amount || ''}
+            value={playerState.currentBid.amount || ''}
             onChange={(e) => {
               updateBid('amount', e.target.value);
             }}
@@ -73,17 +80,22 @@ const BidWindow = () => {
         </div>
         <div>
           <div>Face</div>
-          <select
-            onChange={(e) => {
-              updateBid('face', e.target.value);
-            }}>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-          </select>
+
+          <sc.DiceFaces>
+            {diceFaces.map((num) => {
+              let SpecificDie = DiceArray[num];
+              return (
+                <sc.DiceFaceOption
+                  selected={playerState.currentBid.face === num}
+                  key={num}
+                  onClick={() => {
+                    updateBid('face', num);
+                  }}>
+                  <SpecificDie></SpecificDie>
+                </sc.DiceFaceOption>
+              );
+            })}
+          </sc.DiceFaces>
         </div>
         <sc.Button
           onClick={() => {
@@ -101,7 +113,7 @@ const BidWindow = () => {
         {bidWindow && bidWindowElement}
         <sc.Button
           onClick={
-            bid.amount
+            playerState.currentBid.amount
               ? () => {
                   placeBid();
                 }
@@ -109,7 +121,7 @@ const BidWindow = () => {
                   toggleBidWindow();
                 }
           }>
-          {bid.amount ? 'Place Bid' : 'Set Bid'}
+          {playerState.currentBid.amount ? 'Place Bid' : 'Set Bid'}
         </sc.Button>
       </div>
     </>

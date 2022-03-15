@@ -6,6 +6,7 @@ import { SocketContext } from '../../Context/SocketProvider';
 import BidWindow from '../../components/BidWindow';
 import DudoButton from '../../components/DudoButton';
 import EvenButton from '../../components/EvenButton';
+import BidButton from '../../components/BidButton';
 import Dice from '../../components/Dice';
 import Cup from '../../atoms/Cup';
 import CupUp from '../../atoms/CupUp';
@@ -76,16 +77,24 @@ const Bid = () => {
       </sc.DiceCupContainer>
     );
 
-  const lastBidElement =
-    gameState.lastBid?.amount !== 0 &&
-    usersArray[lastTurn] !== playerState.username ? (
+  let lastBidElement =
+    gameState.lastBid?.amount !== 0 ? (
       <div>
-        {usersArray[lastTurn]} bid {gameState.lastBid?.amount}{' '}
-        {gameState.lastBid?.face}'s
+        {usersArray[lastTurn] === playerState.username
+          ? 'You'
+          : usersArray[lastTurn]}{' '}
+        bid {gameState.lastBid?.amount} {gameState.lastBid?.face}'s
       </div>
     ) : (
       <></>
     );
+
+  let currentBidElement = (
+    <sc.CurrentBid>
+      <div>Your bid : </div>
+      <BidWindow></BidWindow>
+    </sc.CurrentBid>
+  );
 
   const turnElement = (
     <sc.TurnContainer>
@@ -100,8 +109,8 @@ const Bid = () => {
 
   return (
     <>
-      {lastBidElement}
       {turnElement}
+      <sc.lastBidContainer>{lastBidElement}</sc.lastBidContainer>
       {diceCup}
       {diceArray.length === 0 ? (
         <sc.RollButton
@@ -113,12 +122,24 @@ const Bid = () => {
       ) : (
         <></>
       )}
+
       {playerState?.username === usersArray[gameState.turn] &&
       diceArray.length !== 0 ? (
         <sc.ActionsContainer>
-          <BidWindow></BidWindow>
-          {gameState.lastBid?.amount !== 0 ? <DudoButton></DudoButton> : <></>}
-          {gameState.lastBid?.amount !== 0 ? <EvenButton></EvenButton> : <></>}
+          {currentBidElement}
+          <sc.ActionButtonsContainer>
+            <BidButton></BidButton>
+            {gameState.lastBid?.amount !== 0 ? (
+              <DudoButton></DudoButton>
+            ) : (
+              <></>
+            )}
+            {gameState.lastBid?.amount !== 0 ? (
+              <EvenButton></EvenButton>
+            ) : (
+              <></>
+            )}
+          </sc.ActionButtonsContainer>
         </sc.ActionsContainer>
       ) : (
         <></>

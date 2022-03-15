@@ -15,8 +15,6 @@ export const AppContainer = styled.div`
 `;
 
 export const StateButton = styled.div`
-  position: absolute;
-  bottom: 0;
   border: 1px solid gray;
   border-radius: 5px;
   margin: 8px;

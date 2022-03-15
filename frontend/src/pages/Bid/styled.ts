@@ -46,16 +46,33 @@ export const Button = styled.div`
   cursor: pointer;
 `;
 
-export const ActionsContainer = styled.div`
+export const ActionsContainer = styled.div``;
+
+export const CurrentBid = styled.div`
+  display: flex;
+  margin: 8px;
+  justify-content: center;
+`;
+
+export const EditBid = styled.div`
+  border: 1px solid gray;
+  padding: 4px 8px;
+  border-radius: 5px;
+`;
+
+export const ActionButtonsContainer = styled.div`
+  margin: 16px 0;
+  gap: 12px;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 export const DiceCupContainer = styled.div`
   /* width: 80%; */
   width: 200px;
-  height: 300px;
+  height: 225px;
   margin: auto;
   position: relative;
   display: flex;
@@ -82,4 +99,12 @@ export const CupUpContainer = styled.div`
 export const Hint = styled.div`
   text-align: center;
   color: #686868;
+`;
+
+export const lastBidContainer = styled.div`
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 `;

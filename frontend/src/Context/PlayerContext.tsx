@@ -15,6 +15,7 @@ interface PlayerState {
   room?: string | null;
   avatar?: 'male' | 'female' | null;
   phase?: 'bid' | 'results';
+  currentBid: { amount: number; face: number };
 }
 
 interface PlayerContext {
@@ -23,7 +24,7 @@ interface PlayerContext {
 }
 
 export const PlayerContext = React.createContext<PlayerContext>({
-  playerState: {},
+  playerState: { currentBid: { amount: 0, face: 0 } },
   setPlayerState: () => true,
 });
 
@@ -33,6 +34,7 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
 
   const [playerState, setPlayerState] = useState<PlayerState>({
     phase: 'bid',
+    currentBid: { amount: 0, face: 0 },
   });
 
   useEffect(() => {
@@ -53,6 +55,7 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
       let room = idArray ? idArray[0] : undefined;
       console.log('playerState from update-state event: ', playerState);
       let newPlayerState = {
+        ...playerState,
         username: username,
         room: room,
         phase: state.phase,
