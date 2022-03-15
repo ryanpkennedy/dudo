@@ -165,6 +165,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   );
 
   socket.on('close-room', ({ room }) => {
+    //add turn randomizer in here, so the game doesn't always start with the person who first joined room
     try {
       console.log('close-room event received for room', room);
       if (db[room]) {

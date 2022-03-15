@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./:/frontend
+    ports:
+      - '3000:3000'
+    image: dudo:dudo-front
+    container_name: dudo-front_container
+    command: npm start
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - '4000:4000'
+    image: dudo:dudo-back
+    container_name: dudo-back_container
+    command: npm run dev
