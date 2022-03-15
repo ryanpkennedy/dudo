@@ -33,6 +33,7 @@ interface GameState {
   turn: number;
   dice?: Dice;
   phase?: string;
+  loser?: number;
   lastBid?: { amount: number; face: number };
 }
 

@@ -17,6 +17,7 @@ interface room {
   turn: number;
   dice: { [key: number]: number };
   phase: 'bid' | 'results';
+  loser: number;
   lastBid: { amount: number; face: number };
 }
 

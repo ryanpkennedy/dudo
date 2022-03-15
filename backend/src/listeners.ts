@@ -16,6 +16,7 @@ interface room {
   turn: number;
   dice: { [key: number]: number };
   phase: 'bid' | 'results';
+  loser: number;
   lastBid: { amount: number; face: number };
 }
 
@@ -131,6 +132,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
               turn: 0,
               dice: {},
               phase: 'bid',
+              loser: 0,
               lastBid: { amount: 0, face: 0 },
             };
             // this means this is the first user for this room, so make them the party leader
@@ -209,7 +211,8 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       if (db[room]) {
         let bidAmount = db[room].lastBid.amount;
         let bidFace = db[room].lastBid.face;
-        let roomAmount = db[room].dice[bidFace!];
+        //count ones as wild. add state variable for palifico later
+        let roomAmount = db[room].dice[bidFace!] + db[room].dice[1];
         let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         if (bidAmount! <= roomAmount) {
           // person who called dudo loses die
@@ -228,6 +231,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
         }
         db[room].lastBid = { amount: 0, face: 0 };
         db[room].phase = 'results';
+        db[room].loser = db[room].turn;
         io.to(room).emit('update-state', db[room]);
       }
     } catch (err) {
@@ -239,6 +243,18 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     try {
       if (db[room]) {
         console.log('check even');
+        let bidAmount = db[room].lastBid.amount;
+        let bidFace = db[room].lastBid.face;
+        //count ones as wild. add state variable for palifico later
+        let roomAmount = db[room].dice[bidFace!] + db[room].dice[1];
+        db[room].lastBid = { amount: 0, face: 0 };
+        db[room].phase = 'results';
+        if (bidAmount === roomAmount) {
+          db[room].loser = -1;
+        } else {
+          db[room].loser = db[room].turn;
+        }
+        io.to(room).emit('update-state', db[room]);
       }
     } catch (err) {
       console.log('even listener error: ', err);

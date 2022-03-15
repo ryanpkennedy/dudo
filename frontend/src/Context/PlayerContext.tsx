@@ -45,6 +45,7 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         turn: state.turn,
         dice: state.dice,
         phase: state.phase,
+        loser: state.loser,
         lastBid: state.lastBid,
       });
       let idArray = localStorage.getItem('id')?.split('_');

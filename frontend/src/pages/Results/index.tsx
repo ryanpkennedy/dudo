@@ -15,14 +15,16 @@ const Results = () => {
     socket.emit('next-round', { room: playerState.room });
   };
 
+  let loser =
+    gameState.loser === -1
+      ? 'No One'
+      : usersArray[gameState.turn] === playerState.username
+      ? 'You'
+      : usersArray[gameState.turn];
+
   return (
     <sc.Results>
-      <sc.UserString>
-        {usersArray[gameState.turn] === playerState.username
-          ? 'You'
-          : usersArray[gameState.turn]}{' '}
-        lost a die!
-      </sc.UserString>
+      <sc.UserString>{loser} lost a die!</sc.UserString>
       <sc.Button onClick={() => handleNextRound()}>Next Round</sc.Button>
     </sc.Results>
   );
