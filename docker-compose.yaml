@@ -10,7 +10,7 @@ services:
       - '3000:3000'
     image: dudo:dudo-front
     container_name: dudo-front_container
-    command: npm start
+    # command: npm start
   backend:
     build:
       context: ./backend
@@ -19,4 +19,4 @@ services:
       - '4000:4000'
     image: dudo:dudo-back
     container_name: dudo-back_container
-    command: npm run dev
+    command: npm run start

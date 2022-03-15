@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.f5a518b8.css","mappings":"AAAA,EAGE,aAAc,CAFd,oCAAwC,CAGxC,cAAe,CAFf,kBAGF,CAEA,KAEE,QAAS,CADT,SAEF","sources":["App.css"],"sourcesContent":["* {\n  font-family: 'Permanent Marker', cursive;\n  letter-spacing: 2px;\n  color: #383838;\n  font-size: 20px;\n}\n\nbody {\n  padding: 0;\n  margin: 0;\n}\n"],"names":[],"sourceRoot":""}

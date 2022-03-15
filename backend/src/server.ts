@@ -22,6 +22,8 @@ interface room {
 
 let db: { [key: string]: room } = {};
 
+console.log('server restart db: ', JSON.stringify(db));
+
 io.on('connection', (socket) => registerListeners(io, socket, db));
 
 io.listen(4000);
