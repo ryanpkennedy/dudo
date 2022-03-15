@@ -54,7 +54,7 @@ this way,
 Generalize 'update-state' function. So you can emit from wherever with universal functionality. Pass in what you want the new state to be, and updated state gets emitted
 
 
-3/13/21
+3/13/22
 Need to move 'db' which is just node object database, which will never actually remove rooms, to a redis based db
 
 Dockerfile
@@ -64,3 +64,8 @@ Dockerfile
     > serve -s build
 
 - serve socket.io backend on other port
+
+3/15/22
+- Add remaining players check / game termination
+- Add palifico functionality 
+- Add edit bid option - once bid is set it currently can't be edited before placing
