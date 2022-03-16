@@ -13,8 +13,6 @@ const Login = () => {
   const [avatarSelection, setAvatarSelection] = useState<
     'male' | 'female' | undefined
   >('male');
-  const [username, setUsername] = useState('');
-  const [room, setRoom] = useState('');
 
   const selectAvatar = (type: 'male' | 'female') => {
     setAvatarSelection(type);
@@ -26,7 +24,7 @@ const Login = () => {
     if (usernameVal.length > 10) {
       usernameVal = usernameVal.slice(0, 10);
     }
-    setUsername(usernameVal);
+    setPlayerState({ ...playerState, username: usernameVal });
   };
 
   const handleRoom = (e: any) => {
@@ -35,10 +33,10 @@ const Login = () => {
     if (roomVal.length > 8) {
       roomVal = roomVal.slice(0, 8);
     }
-    setRoom(roomVal);
+    setPlayerState({ ...playerState, room: roomVal });
   };
 
-  const checkForm = () => {
+  const checkForm = (username: string | '', room: string | '') => {
     if (avatarSelection && username !== '' && room !== '') {
       return true;
     } else {
@@ -46,8 +44,8 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = () => {
-    let formCheck = checkForm();
+  const handleSubmit = (username: string | '', room: string | '') => {
+    let formCheck = checkForm(username, room);
     if (!formCheck) {
       alert('missing something');
     } else {
@@ -57,13 +55,13 @@ const Login = () => {
         username: username,
         room: room,
       };
+      localStorage.setItem('id', `${room}_${username}`);
       socket.emit(
         'login',
         { username, avatarSelection, room },
         (response: any) => {
           if (response.status === '200') {
             console.log('login success');
-            localStorage.setItem('id', `${room}_${username}`);
             //@ts-ignore
             setPlayerState(tempState);
           } else {
@@ -86,7 +84,7 @@ const Login = () => {
           onChange={(e) => {
             handleUsername(e);
           }}
-          value={username}></sc.InputValue>
+          value={playerState.username || ''}></sc.InputValue>
       </sc.InputContainer>
 
       {/* <div>Select Avatar</div>
@@ -108,12 +106,12 @@ const Login = () => {
           onChange={(e) => {
             handleRoom(e);
           }}
-          value={room}></sc.InputValue>
+          value={playerState.room || ''}></sc.InputValue>
       </sc.InputContainer>
 
       <sc.SubmitButton
         onClick={() => {
-          handleSubmit();
+          handleSubmit(playerState.username || '', playerState.room || '');
         }}>
         Join
       </sc.SubmitButton>

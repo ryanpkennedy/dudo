@@ -31,8 +31,13 @@ export const PlayerContext = React.createContext<PlayerContext>({
 const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
   const { socket } = useContext(SocketContext);
   const { gameState, setGameState } = useContext(GameContext);
+  let idArray = localStorage.getItem('id')?.split('_');
+  let username = idArray ? idArray[1] : undefined;
+  let room = idArray ? idArray[0] : undefined;
 
   const [playerState, setPlayerState] = useState<PlayerState>({
+    username: username,
+    room: room,
     phase: 'bid',
     currentBid: { amount: 0, face: 0 },
   });
@@ -50,14 +55,9 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         loser: state.loser,
         lastBid: state.lastBid,
       });
-      let idArray = localStorage.getItem('id')?.split('_');
-      let username = idArray ? idArray[1] : undefined;
-      let room = idArray ? idArray[0] : undefined;
       console.log('playerState from update-state event: ', playerState);
       let newPlayerState = {
         ...playerState,
-        username: username,
-        room: room,
         phase: state.phase,
       };
       setPlayerState(newPlayerState);

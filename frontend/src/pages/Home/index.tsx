@@ -22,7 +22,12 @@ const Home = React.memo(() => {
         if (response.status === 'user-room combo does not exist') {
           localStorage.clear();
           setId(localStorage.getItem('id'));
-          setPlayerState({ currentBid: { amount: 0, face: 0 } });
+          let newPlayerState = {
+            username: '',
+            room: '',
+            currentBid: { amount: 0, face: 0 },
+          };
+          setPlayerState(newPlayerState);
         }
       });
     }
