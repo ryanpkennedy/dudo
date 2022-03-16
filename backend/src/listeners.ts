@@ -166,14 +166,25 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     }
   );
 
-  socket.on('close-room', ({ room }) => {
+  socket.on('close-room', ({ room }, callback) => {
     //add turn randomizer in here, so the game doesn't always start with the person who first joined room
     try {
       console.log('close-room event received for room', room);
       if (db[room]) {
-        db[room].open = false;
-        console.log('update state called from login listener');
-        io.to(room).emit('update-state', db[room]);
+        let usersArray = Object.getOwnPropertyNames(db[room]['users']);
+        if (usersArray.length < minRoomSize) {
+          callback({
+            status:
+              'need at least two players to play. Use a second incognito tab if you want to test yourself',
+          });
+        } else if (usersArray.length > maxRoomSize) {
+          callback({
+            status: 'too many players in room. someone needs to log out',
+          });
+        } else {
+          db[room].open = false;
+          callback({ status: '200' });
+        }
       }
     } catch (err) {
       console.log('close-room listener error: ', err);
@@ -296,6 +307,9 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       let oldId = idArray[1];
       if (db[room] && db[room].users[oldId]) {
         delete db[room].users[oldId];
+        let updatedLeader = Object.getOwnPropertyNames(db[room]['users'])[0];
+        db[room]['users'][updatedLeader].roomLeader = true;
+        io.to(room).emit('update-state', db[room]);
       }
     } catch (err) {
       console.log('logout listener error: ', err);

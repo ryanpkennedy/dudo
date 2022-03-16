@@ -19,7 +19,13 @@ const Lobby = () => {
   };
 
   const handleStartGame = () => {
-    socket.emit('close-room', { room: playerState?.room });
+    socket.emit('close-room', { room: playerState.room }, (response: any) => {
+      if (response.status === '200') {
+        socket.emit('update-all', { room: playerState.room });
+      } else {
+        alert(response.status);
+      }
+    });
   };
 
   return (
