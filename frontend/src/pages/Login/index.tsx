@@ -1,8 +1,5 @@
 import React, { useContext, useState } from 'react';
 import * as sc from './styled';
-import Male from '../../atoms/Avatar/Male';
-import Female from '../../atoms/Avatar/Female';
-import { GameContext } from '../../Context/GameContext';
 import { SocketContext } from '../../Context/SocketProvider';
 import { PlayerContext } from '../../Context/PlayerContext';
 import CoverPic from '../../atoms/CoverPic';

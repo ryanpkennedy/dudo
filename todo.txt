@@ -68,4 +68,3 @@ Dockerfile
 3/15/22
 - Add remaining players check / game termination
 - Add palifico functionality
-- On logout server event, need to make sure there is a party leader if the leader logs out

@@ -18,6 +18,7 @@ interface room {
   phase: 'bid' | 'results';
   loser: number;
   lastBid: { amount: number; face: number };
+  palifico: boolean;
 }
 
 interface db {
@@ -27,6 +28,7 @@ interface db {
 export const registerListeners = async (io: any, socket: Socket, db: db) => {
   let maxRoomSize = 8;
   let minRoomSize = 2;
+  let diceCount = 2;
 
   const countDice = (room: string) => {
     let allUsersRolled = true;
@@ -59,6 +61,26 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       db[room].dice = newDice;
       console.log('game dice count: ', newDice);
     }
+  };
+
+  const cleanRoom = (room: room): room => {
+    console.log('remove players with no dice left and check for palifico');
+    let tempRoom: room = { ...room };
+    let oneCount = 0;
+    let usersArray = Object.getOwnPropertyNames(tempRoom.users);
+    for (let user of usersArray) {
+      if (tempRoom.users[user].diceRemaining === 0) {
+        delete tempRoom['users'][user];
+      } else if (tempRoom.users[user].diceRemaining === 1) {
+        oneCount++;
+      }
+    }
+    if (oneCount === 1) {
+      tempRoom.palifico = true;
+    } else {
+      tempRoom.palifico = false;
+    }
+    return tempRoom;
   };
 
   // let liveSockets = await io.allSockets();
@@ -114,7 +136,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       try {
         let newUser: User = {
           avatarSelection: user.avatarSelection,
-          diceRemaining: 6,
+          diceRemaining: diceCount,
           currentDice: [],
           roomLeader: false,
         };
@@ -134,6 +156,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
               phase: 'bid',
               loser: 0,
               lastBid: { amount: 0, face: 0 },
+              palifico: false,
             };
             // this means this is the first user for this room, so make them the party leader
             newUser.roomLeader = true;
@@ -222,8 +245,10 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       if (db[room]) {
         let bidAmount = db[room].lastBid.amount;
         let bidFace = db[room].lastBid.face;
-        //count ones as wild. add state variable for palifico later
-        let roomAmount = db[room].dice[bidFace!] + db[room].dice[1];
+        //count ones as wild, unless palifico is true
+        let roomAmount = db[room].palifico
+          ? db[room].dice[bidFace!]
+          : db[room].dice[bidFace!] + db[room].dice[1];
         let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         if (bidAmount! <= roomAmount) {
           // person who called dudo loses die
@@ -236,11 +261,6 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
           let loser = usersArray[db[room].turn];
           db[room]['users'][loser].diceRemaining -= 1;
         }
-        // reset everyones dice for the next round
-        for (let k of usersArray) {
-          db[room]['users'][k].currentDice = [];
-        }
-        db[room].lastBid = { amount: 0, face: 0 };
         db[room].phase = 'results';
         db[room].loser = db[room].turn;
         io.to(room).emit('update-state', db[room]);
@@ -257,13 +277,18 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
         let bidAmount = db[room].lastBid.amount;
         let bidFace = db[room].lastBid.face;
         //count ones as wild. add state variable for palifico later
-        let roomAmount = db[room].dice[bidFace!] + db[room].dice[1];
+        let roomAmount = db[room].palifico
+          ? db[room].dice[bidFace!]
+          : db[room].dice[bidFace!] + db[room].dice[1];
         db[room].lastBid = { amount: 0, face: 0 };
         db[room].phase = 'results';
+        let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         if (bidAmount === roomAmount) {
           db[room].loser = -1;
         } else {
           db[room].loser = db[room].turn;
+          let loser = usersArray[db[room].loser];
+          db[room]['users'][loser].diceRemaining -= 1;
         }
         io.to(room).emit('update-state', db[room]);
       }
@@ -275,6 +300,12 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   socket.on('next-round', ({ room }) => {
     try {
       if (db[room]) {
+        let usersArray = Object.getOwnPropertyNames(db[room]['users']);
+        for (let k of usersArray) {
+          db[room]['users'][k].currentDice = [];
+        }
+        db[room].lastBid = { amount: 0, face: 0 };
+        db[room] = cleanRoom(db[room]);
         db[room].phase = 'bid';
         io.to(room).emit('update-state', db[room]);
       }

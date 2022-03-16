@@ -54,6 +54,7 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         phase: state.phase,
         loser: state.loser,
         lastBid: state.lastBid,
+        palifico: state.palifico,
       });
     });
 

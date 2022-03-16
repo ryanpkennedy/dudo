@@ -19,6 +19,7 @@ interface room {
   phase: 'bid' | 'results';
   loser: number;
   lastBid: { amount: number; face: number };
+  palifico: boolean;
 }
 
 let db: { [key: string]: room } = {};

@@ -35,6 +35,7 @@ interface GameState {
   phase?: string;
   loser?: number;
   lastBid?: { amount: number; face: number };
+  palifico: boolean;
 }
 
 interface GameContext {
@@ -43,7 +44,7 @@ interface GameContext {
 }
 
 export const GameContext = React.createContext<GameContext>({
-  gameState: { users: {}, turn: 0 },
+  gameState: { users: {}, turn: 0, palifico: false },
   setGameState: () => true,
 });
 
@@ -53,6 +54,7 @@ const GameContextProvider = ({ children }: { children: ReactNode }) => {
     open: true,
     users: {},
     turn: 0,
+    palifico: false,
   });
 
   return (
