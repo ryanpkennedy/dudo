@@ -16,37 +16,8 @@ const BidWindow = () => {
   console.log('(Game) users array: ', usersArray[gameState.turn]);
   console.log('(Game) playstate.username: ', playerState.username);
 
-  const checkBid = (currBid: { amount: number; face: number }) => {
-    if (currBid.amount > gameState.lastBid?.amount!) {
-      return true;
-    } else if (
-      currBid.amount === gameState.lastBid?.amount! &&
-      currBid.face > gameState.lastBid?.face!
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const placeBid = () => {
-    socket.emit('place-bid', {
-      bid: playerState.currentBid,
-      room: playerState.room,
-    });
-    let newPlayerState = { ...playerState, currentBid: { amount: 0, face: 0 } };
-    setPlayerState(newPlayerState);
-    socket.emit('increment-turn', { room: playerState.room });
-  };
-
   const toggleBidWindow = () => {
-    if (!bidWindow || (bidWindow && checkBid(playerState.currentBid!))) {
-      setBidWindow((prev) => !prev);
-    } else {
-      alert(
-        'not a valid bid. amount must be higher or equal and if equal face must be higher'
-      );
-    }
+    setBidWindow((prev) => !prev);
   };
 
   const updateBid = (type: 'face' | 'amount', val: any) => {
@@ -112,16 +83,12 @@ const BidWindow = () => {
       <div>
         {bidWindow && bidWindowElement}
         <sc.Button
-          onClick={
-            playerState.currentBid.amount
-              ? () => {
-                  placeBid();
-                }
-              : () => {
-                  toggleBidWindow();
-                }
-          }>
-          {playerState.currentBid.amount ? 'Place Bid' : 'Set Bid'}
+          onClick={() => {
+            toggleBidWindow();
+          }}>
+          {playerState.currentBid.amount === 0
+            ? 'Set Bid'
+            : `${playerState.currentBid.amount} ${playerState.currentBid.face}'s`}
         </sc.Button>
       </div>
     </>

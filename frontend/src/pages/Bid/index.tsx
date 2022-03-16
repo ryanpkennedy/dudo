@@ -90,10 +90,10 @@ const Bid = () => {
     );
 
   let currentBidElement = (
-    <sc.CurrentBid>
-      <div>Your bid : </div>
+    <sc.CurrentBidContainer>
+      <sc.CurrentBid>Your bid : </sc.CurrentBid>
       <BidWindow></BidWindow>
-    </sc.CurrentBid>
+    </sc.CurrentBidContainer>
   );
 
   const turnElement = (

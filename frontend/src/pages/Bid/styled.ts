@@ -48,16 +48,15 @@ export const Button = styled.div`
 
 export const ActionsContainer = styled.div``;
 
-export const CurrentBid = styled.div`
+export const CurrentBidContainer = styled.div`
   display: flex;
   margin: 8px;
   justify-content: center;
 `;
 
-export const EditBid = styled.div`
-  border: 1px solid gray;
-  padding: 4px 8px;
-  border-radius: 5px;
+export const CurrentBid = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export const ActionButtonsContainer = styled.div`
@@ -66,7 +65,7 @@ export const ActionButtonsContainer = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 export const DiceCupContainer = styled.div`

@@ -27,8 +27,7 @@ export const BidWindow = styled.div`
 `;
 
 export const Button = styled.div`
-  width: 150px;
-  padding: 8px;
+  padding: 4px 16px;
   /* margin: 16px auto; */
   border-radius: 8px;
   border: 1px solid gray;
