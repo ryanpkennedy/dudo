@@ -34,14 +34,14 @@ const Lobby = () => {
       {userArray.map((user: any) => {
         return (
           <sc.UserContainer key={user}>
-            <div>{user}</div>
+            <sc.UserName>{user}</sc.UserName>
             {gameState?.users[user].roomLeader &&
             user === playerState?.username ? (
               <sc.StartButton
                 onClick={() => {
                   handleStartGame();
                 }}>
-                Start Game
+                Party Ready
               </sc.StartButton>
             ) : (
               <></>

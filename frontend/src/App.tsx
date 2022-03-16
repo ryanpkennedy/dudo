@@ -7,7 +7,6 @@ import * as sc from './styled';
 import { useContext } from 'react';
 
 function App() {
-  const { gameState, setGameState } = useContext(GameContext);
   return (
     <SocketProvider>
       <GameContextProvider>

@@ -57,12 +57,12 @@ const Home = React.memo(() => {
         </sc.HomeContainer>
       </sc.AppContainer>
       <div style={{ fontSize: '14px' }}>
-        <sc.StateButton
+        {/* <sc.StateButton
           onClick={() => {
             setStateView((prev) => !prev);
           }}>
           Show State
-        </sc.StateButton>
+        </sc.StateButton> */}
         {stateView ? stateElement : <></>}
       </div>
     </>
