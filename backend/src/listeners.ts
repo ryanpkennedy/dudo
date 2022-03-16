@@ -61,8 +61,8 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     }
   };
 
-  let liveSockets = await io.allSockets();
-  console.log('current connections: ', liveSockets);
+  // let liveSockets = await io.allSockets();
+  // console.log('current connections: ', liveSockets);
 
   socket.on('disconnect', async () => {
     console.log('socket disconnect');
@@ -155,7 +155,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
 
             console.log(`all users in room ${user.room}`, db[user.room].users);
             console.log('update state called from login listener');
-            io.to(user.room).emit('update-state', db[user.room]);
+            // io.to(user.room).emit('update-state', db[user.room]);
             callback({ status: '200' });
           }
         }
@@ -300,5 +300,9 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     } catch (err) {
       console.log('logout listener error: ', err);
     }
+  });
+
+  socket.on('update-all', ({ room }) => {
+    io.to(room).emit('update-state', db[room]);
   });
 };

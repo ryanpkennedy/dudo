@@ -42,8 +42,6 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
     currentBid: { amount: 0, face: 0 },
   });
 
-  console.log('(PlayerContext) initial playerState: ', playerState);
-
   useEffect(() => {
     socket.on('update-state', (state) => {
       console.log('(GameContext) update-state called');
@@ -57,7 +55,6 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         loser: state.loser,
         lastBid: state.lastBid,
       });
-      console.log('playerState from update-state event: ', playerState);
     });
 
     socket.on('next-turn', () => {

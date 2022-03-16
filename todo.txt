@@ -67,5 +67,4 @@ Dockerfile
 
 3/15/22
 - Add remaining players check / game termination
-- Add palifico functionality 
-- Add edit bid option - once bid is set it currently can't be edited before placing
+- Add palifico functionality
