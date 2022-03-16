@@ -44,7 +44,8 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (username: string | '', room: string | '') => {
+  const handleSubmit = async (username: string | '', room: string | '') => {
+    localStorage.setItem('id', `${room}_${username}`);
     let formCheck = checkForm(username, room);
     if (!formCheck) {
       alert('missing something');
@@ -55,13 +56,14 @@ const Login = () => {
         username: username,
         room: room,
       };
-      localStorage.setItem('id', `${room}_${username}`);
       socket.emit(
         'login',
         { username, avatarSelection, room },
         (response: any) => {
           if (response.status === '200') {
             console.log('login success');
+            socket.emit('update-all', { room });
+            console.log('(Login) tempState before update: ', tempState);
             //@ts-ignore
             setPlayerState(tempState);
           } else {
@@ -87,19 +89,6 @@ const Login = () => {
           value={playerState.username || ''}></sc.InputValue>
       </sc.InputContainer>
 
-      {/* <div>Select Avatar</div>
-      <sc.AvatarSelectionContainer>
-        <sc.AvatarContainer
-          selected={avatarSelection === 'male'}
-          onClick={() => selectAvatar('male')}>
-          <Male></Male>
-        </sc.AvatarContainer>
-        <sc.AvatarContainer
-          selected={avatarSelection === 'female'}
-          onClick={() => selectAvatar('female')}>
-          <Female></Female>
-        </sc.AvatarContainer>
-      </sc.AvatarSelectionContainer> */}
       <sc.InputContainer>
         <sc.InputField>Room Name</sc.InputField>
         <sc.InputValue

@@ -14,7 +14,6 @@ interface PlayerState {
   username?: string | null;
   room?: string | null;
   avatar?: 'male' | 'female' | null;
-  phase?: 'bid' | 'results';
   currentBid: { amount: number; face: number };
 }
 
@@ -29,6 +28,7 @@ export const PlayerContext = React.createContext<PlayerContext>({
 });
 
 const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
+  console.log('(PlayerContext) Player Context Provider rendered');
   const { socket } = useContext(SocketContext);
   const { gameState, setGameState } = useContext(GameContext);
   let idArray = localStorage.getItem('id')?.split('_');
@@ -38,15 +38,17 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
   const [playerState, setPlayerState] = useState<PlayerState>({
     username: username,
     room: room,
-    phase: 'bid',
+    // phase: 'bid',
     currentBid: { amount: 0, face: 0 },
   });
+
+  console.log('(PlayerContext) initial playerState: ', playerState);
 
   useEffect(() => {
     socket.on('update-state', (state) => {
       console.log('(GameContext) update-state called');
       setGameState({
-        ...gameState,
+        // ...gameState,
         users: state.users,
         open: state.open,
         turn: state.turn,
@@ -56,11 +58,6 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         lastBid: state.lastBid,
       });
       console.log('playerState from update-state event: ', playerState);
-      let newPlayerState = {
-        ...playerState,
-        phase: state.phase,
-      };
-      setPlayerState(newPlayerState);
     });
 
     socket.on('next-turn', () => {

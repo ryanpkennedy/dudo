@@ -48,6 +48,7 @@ export const GameContext = React.createContext<GameContext>({
 });
 
 const GameContextProvider = ({ children }: { children: ReactNode }) => {
+  console.log('(Game) GameContextProvider rendered');
   const [gameState, setGameState] = useState<GameState>({
     open: true,
     users: {},

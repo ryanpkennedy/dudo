@@ -17,6 +17,7 @@ interface SocketProviderProps {
 }
 
 const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  console.log('(Socket Provider) Socket Provider rendered');
   return (
     <SocketContext.Provider value={{ socket }}>
       {children}
