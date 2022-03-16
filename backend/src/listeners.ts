@@ -15,7 +15,7 @@ interface room {
   users: { [key: string]: User };
   turn: number;
   dice: { [key: number]: number };
-  phase: 'bid' | 'results';
+  phase: 'bid' | 'results' | 'winner';
   loser: number;
   lastBid: { amount: number; face: number };
   palifico: boolean;
@@ -300,13 +300,17 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   socket.on('next-round', ({ room }) => {
     try {
       if (db[room]) {
+        db[room].lastBid = { amount: 0, face: 0 };
+        db[room] = cleanRoom(db[room]);
         let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         for (let k of usersArray) {
           db[room]['users'][k].currentDice = [];
         }
-        db[room].lastBid = { amount: 0, face: 0 };
-        db[room] = cleanRoom(db[room]);
-        db[room].phase = 'bid';
+        if (usersArray.length === 1) {
+          db[room].phase = 'winner';
+        } else {
+          db[room].phase = 'bid';
+        }
         io.to(room).emit('update-state', db[room]);
       }
     } catch (err) {

@@ -16,7 +16,7 @@ interface room {
   users: { [key: string]: User };
   turn: number;
   dice: { [key: number]: number };
-  phase: 'bid' | 'results';
+  phase: 'bid' | 'results' | 'winner';
   loser: number;
   lastBid: { amount: number; face: number };
   palifico: boolean;
