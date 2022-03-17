@@ -11,13 +11,6 @@ const Lobby = () => {
   const { socket } = useContext(SocketContext);
   const userArray = Object.getOwnPropertyNames(gameState?.users);
 
-  const handleLogout = () => {
-    socket.emit('logout', { id: localStorage.getItem('id') });
-    localStorage.clear();
-    //@ts-ignore
-    setPlayerState({});
-  };
-
   const handleStartGame = () => {
     socket.emit('close-room', { room: playerState.room }, (response: any) => {
       if (response.status === '200') {
@@ -30,19 +23,25 @@ const Lobby = () => {
 
   return (
     <div>
-      <div style={{ margin: '48px' }}>Room: {playerState?.room}</div>
+      <sc.Section>
+        <sc.RoomHeader>Room</sc.RoomHeader>
+        <sc.Room>{playerState?.room}</sc.Room>
+      </sc.Section>
+      <sc.PlayersHeader>Players</sc.PlayersHeader>
       {userArray.map((user: any) => {
         return (
           <sc.UserContainer key={user}>
             <sc.UserName>{user}</sc.UserName>
             {gameState?.users[user].roomLeader &&
             user === playerState?.username ? (
-              <sc.StartButton
-                onClick={() => {
-                  handleStartGame();
-                }}>
-                Party Ready
-              </sc.StartButton>
+              <sc.StartContainer>
+                <sc.StartButton
+                  onClick={() => {
+                    handleStartGame();
+                  }}>
+                  Party Ready
+                </sc.StartButton>
+              </sc.StartContainer>
             ) : (
               <></>
             )}
@@ -50,12 +49,6 @@ const Lobby = () => {
           </sc.UserContainer>
         );
       })}
-      <sc.LogoutButton
-        onClick={() => {
-          handleLogout();
-        }}>
-        Logout
-      </sc.LogoutButton>
     </div>
   );
 };

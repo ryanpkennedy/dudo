@@ -2,16 +2,15 @@ import SocketProvider from './Context/SocketProvider';
 import GameContextProvider, { GameContext } from './Context/GameContext';
 import PlayerContextProvider from './Context/PlayerContext';
 import Home from './pages/Home';
+import NavBar from './components/NavBar';
 import './App.css';
-import * as sc from './styled';
-import { useContext } from 'react';
 
 function App() {
   return (
     <SocketProvider>
       <GameContextProvider>
         <PlayerContextProvider>
-          <sc.Title>Dudo</sc.Title>
+          <NavBar></NavBar>
           <Home></Home>
         </PlayerContextProvider>
       </GameContextProvider>
