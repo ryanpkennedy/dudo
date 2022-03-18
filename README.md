@@ -1,6 +1,6 @@
 # dudo
 
-This is a web sockets implementation of the multiplayer dice game dudo. 
+This is a web sockets implementation of the multiplayer dice game dudo (available to play at rykennedy.com). 
 
 Built with a React frontend and socket-io backend.
 
