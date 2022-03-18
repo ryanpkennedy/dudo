@@ -28,7 +28,7 @@ interface db {
 export const registerListeners = async (io: any, socket: Socket, db: db) => {
   let maxRoomSize = 8;
   let minRoomSize = 2;
-  let diceCount = 2;
+  let diceCount = 5;
 
   const countDice = (room: string) => {
     let allUsersRolled = true;
@@ -342,9 +342,14 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       let oldId = idArray[1];
       if (db[room] && db[room].users[oldId]) {
         delete db[room].users[oldId];
-        let updatedLeader = Object.getOwnPropertyNames(db[room]['users'])[0];
-        db[room]['users'][updatedLeader].roomLeader = true;
-        io.to(room).emit('update-state', db[room]);
+        let usersArray = Object.getOwnPropertyNames(db[room]['users']);
+        if (usersArray.length === 0) {
+          delete db[room];
+        } else {
+          let updatedLeader = usersArray[0];
+          db[room]['users'][updatedLeader].roomLeader = true;
+          io.to(room).emit('update-state', db[room]);
+        }
       }
     } catch (err) {
       console.log('logout listener error: ', err);

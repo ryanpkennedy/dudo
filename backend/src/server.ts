@@ -1,8 +1,16 @@
+import path from 'path';
+import express from 'express';
+import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { registerListeners } from './listeners';
 
+const app = express();
+const httpServer = createServer(app);
+
+app.use(express.static(path.resolve(__dirname, '../../frontend/build')));
+
 // const io = new Server({ cors: { origin: ['http://localhost:3000'] } });
-const io = new Server({ cors: { origin: '*' } });
+const io = new Server(httpServer, { cors: { origin: '*' } });
 
 interface User {
   avatarSelection: string;
@@ -28,4 +36,5 @@ console.log('server restart db: ', JSON.stringify(db));
 
 io.on('connection', (socket) => registerListeners(io, socket, db));
 
-io.listen(4000);
+httpServer.listen(4000);
+// io.listen(4000);
