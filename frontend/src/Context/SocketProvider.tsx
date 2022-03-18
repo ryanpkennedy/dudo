@@ -8,7 +8,7 @@ interface ContextInterface {
 const id = localStorage.getItem('id');
 
 //to test on mobile while running dev server, need this url to have the IP of server device
-const socket = io('http://192.168.0.209:4000', { query: { id: id } });
+const socket = io('https://www.rykennedy.com', { query: { id: id } });
 
 export const SocketContext = React.createContext<ContextInterface>({ socket });
 

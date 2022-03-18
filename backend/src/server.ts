@@ -7,10 +7,19 @@ import { registerListeners } from './listeners';
 const app = express();
 const httpServer = createServer(app);
 
-app.use(express.static(path.resolve(__dirname, '../../frontend/build')));
+app.use('/', express.static(path.resolve(__dirname, '../../frontend/build')));
 
-// const io = new Server({ cors: { origin: ['http://localhost:3000'] } });
-const io = new Server(httpServer, { cors: { origin: '*' } });
+app.use(
+  '/dudo',
+  express.static(path.resolve(__dirname, '../../frontend/build'))
+);
+
+console.log(__dirname);
+
+// const io = new Server({ cors: { origin: ['*'] } });
+const io = new Server(httpServer, {
+  cors: { origin: 'https//www.rykennedy.com' },
+});
 
 interface User {
   avatarSelection: string;

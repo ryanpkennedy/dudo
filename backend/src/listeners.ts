@@ -59,12 +59,11 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
         }
       }
       db[room].dice = newDice;
-      console.log('game dice count: ', newDice);
     }
   };
 
   const cleanRoom = (room: room): room => {
-    console.log('remove players with no dice left and check for palifico');
+    // console.log('remove players with no dice left and check for palifico');
     let tempRoom: room = { ...room };
     let oneCount = 0;
     let usersArray = Object.getOwnPropertyNames(tempRoom.users);
@@ -97,12 +96,12 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     let idArray = socket.handshake.query.id.split('_');
     let room = idArray[0];
     if (db[room] && db[room]['users'][idArray[1]]) {
-      console.log(`joining room ${room} from localStorage id`);
-      console.log(`current people in room ${room}`, db[room].users);
+      // console.log(`joining room ${room} from localStorage id`);
+      // console.log(`current people in room ${room}`, db[room].users);
       socket.join(room);
     }
   }
-  console.log('Socket ID: \n', socket.id);
+  // console.log('Socket ID: \n', socket.id);
 
   socket.on('get-state', ({ id }, callback) => {
     try {
@@ -111,7 +110,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       //verify that room exists and username exists in room
       if (db[room] && db[room]['users'][idArray[1]]) {
         socket.join(room);
-        console.log('update state called from get-state listener');
+        // console.log('update state called from get-state listener');
         io.to(room).emit('update-state', db[room]);
         callback({ status: '200' });
       } else {
@@ -166,7 +165,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
 
           //check if the room is full
           if (usersArray.length === maxRoomSize) {
-            console.log('room is full');
+            // console.log('room is full');
             callback({ status: 'room is full' });
           } else {
             socket.join(user.room);
@@ -176,8 +175,8 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
             };
             // const clients = io.sockets.adapter.rooms.get('R');
 
-            console.log(`all users in room ${user.room}`, db[user.room].users);
-            console.log('update state called from login listener');
+            // console.log(`all users in room ${user.room}`, db[user.room].users);
+            // console.log('update state called from login listener');
             // io.to(user.room).emit('update-state', db[user.room]);
             callback({ status: '200' });
           }
@@ -192,7 +191,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   socket.on('close-room', ({ room }, callback) => {
     //add turn randomizer in here, so the game doesn't always start with the person who first joined room
     try {
-      console.log('close-room event received for room', room);
+      // console.log('close-room event received for room', room);
       if (db[room]) {
         let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         if (usersArray.length < minRoomSize) {
@@ -273,7 +272,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
   socket.on('even', ({ room }) => {
     try {
       if (db[room]) {
-        console.log('check even');
+        // console.log('check even');
         let bidAmount = db[room].lastBid.amount;
         let bidFace = db[room].lastBid.face;
         //count ones as wild. add state variable for palifico later
