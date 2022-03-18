@@ -18,7 +18,7 @@ console.log(__dirname);
 
 // const io = new Server({ cors: { origin: ['*'] } });
 const io = new Server(httpServer, {
-  cors: { origin: 'https//www.rykennedy.com' },
+  cors: { origin: 'https//rykennedy.com' },
 });
 
 interface User {
