@@ -7,7 +7,7 @@ import { registerListeners } from './listeners';
 const app = express();
 const httpServer = createServer(app);
 
-app.use('/', express.static(path.resolve(__dirname, '../../frontend/build')));
+// app.use('/', express.static(path.resolve(__dirname, '../../frontend/build')));
 
 app.use(
   '/dudo',
