@@ -4,6 +4,9 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { registerListeners } from './listeners';
 
+let mode = 'dev';
+let socketCors = mode === 'dev' ? '*' : 'https://rykennedy.com';
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -16,9 +19,8 @@ app.use(
 
 console.log(__dirname);
 
-// const io = new Server({ cors: { origin: ['*'] } });
-const io = new Server(httpServer, {
-  cors: { origin: 'https://rykennedy.com' },
+let io = new Server(httpServer, {
+  cors: { origin: socketCors },
 });
 
 interface User {
@@ -37,6 +39,7 @@ interface room {
   loser: number;
   lastBid: { amount: number; face: number };
   palifico: boolean;
+  settings: {};
 }
 
 let db: { [key: string]: room } = {};

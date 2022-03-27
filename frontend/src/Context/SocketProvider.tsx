@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+let mode = 'dev';
+let socketUrl =
+  mode === 'dev' ? 'http://192.168.0.209:4000' : 'https://www.rykennedy.com';
+
 interface ContextInterface {
   socket: Socket;
 }
@@ -8,7 +12,7 @@ interface ContextInterface {
 const id = localStorage.getItem('id');
 
 //to test on mobile while running dev server, need this url to have the IP of server device
-const socket = io('https://www.rykennedy.com', { query: { id: id } });
+const socket = io(socketUrl, { query: { id: id } });
 
 export const SocketContext = React.createContext<ContextInterface>({ socket });
 

@@ -1,24 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { GameContext } from '../../Context/GameContext';
 import Avatar from '../../atoms/Avatar';
 import * as sc from './styled';
 import { PlayerContext } from '../../Context/PlayerContext';
 import { SocketContext } from '../../Context/SocketProvider';
+import LobbyFooter from '../../components/LobbyFooter';
+import SettingsWindow from '../../components/SettingsWindow';
 
 const Lobby = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const { socket } = useContext(SocketContext);
+  const [showSettings, setShowSettings] = useState(false);
   const userArray = Object.getOwnPropertyNames(gameState?.users);
 
-  const handleStartGame = () => {
-    socket.emit('close-room', { room: playerState.room }, (response: any) => {
-      if (response.status === '200') {
-        socket.emit('update-all', { room: playerState.room });
-      } else {
-        alert(response.status);
-      }
-    });
+  const toggleSettings = () => {
+    console.log('toggle settings window');
+    setShowSettings((prev) => !prev);
   };
 
   return (
@@ -34,14 +32,7 @@ const Lobby = () => {
             <sc.UserName>{user}</sc.UserName>
             {gameState?.users[user].roomLeader &&
             user === playerState?.username ? (
-              <sc.StartContainer>
-                <sc.StartButton
-                  onClick={() => {
-                    handleStartGame();
-                  }}>
-                  Party Ready
-                </sc.StartButton>
-              </sc.StartContainer>
+              <LobbyFooter toggleSettings={toggleSettings}></LobbyFooter>
             ) : (
               <></>
             )}
@@ -49,6 +40,7 @@ const Lobby = () => {
           </sc.UserContainer>
         );
       })}
+      {showSettings ? <SettingsWindow></SettingsWindow> : <></>}
     </div>
   );
 };
