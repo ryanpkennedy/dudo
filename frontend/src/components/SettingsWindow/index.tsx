@@ -3,7 +3,11 @@ import { PlayerContext } from '../../Context/PlayerContext';
 import { SocketContext } from '../../Context/SocketProvider';
 import * as sc from './styled';
 
-const SettingsWindow = () => {
+interface SettingsWindowProps {
+  toggleSettings: Function;
+}
+
+const SettingsWindow: React.FC<SettingsWindowProps> = ({ toggleSettings }) => {
   const { socket } = useContext(SocketContext);
   const { playerState, setPlayerState } = useContext(PlayerContext);
   const [diceCount, setDiceCount] = useState<number>(5);
@@ -13,6 +17,7 @@ const SettingsWindow = () => {
       room: playerState.room,
       diceCount: diceCount,
     });
+    toggleSettings();
   };
 
   return (

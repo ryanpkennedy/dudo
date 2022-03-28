@@ -107,6 +107,12 @@ const Bid = () => {
     </sc.TurnContainer>
   );
 
+  let totalDice = 0;
+
+  for (let user of usersArray) {
+    totalDice += gameState.users[user].diceRemaining;
+  }
+
   return (
     <>
       {turnElement}
@@ -149,6 +155,9 @@ const Bid = () => {
       ) : (
         <></>
       )}
+      <sc.RoomDice style={{ textAlign: 'center' }}>
+        Room Dice: {totalDice}
+      </sc.RoomDice>
     </>
   );
 };

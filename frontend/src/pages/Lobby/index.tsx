@@ -40,7 +40,11 @@ const Lobby = () => {
           </sc.UserContainer>
         );
       })}
-      {showSettings ? <SettingsWindow></SettingsWindow> : <></>}
+      {showSettings ? (
+        <SettingsWindow toggleSettings={toggleSettings}></SettingsWindow>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

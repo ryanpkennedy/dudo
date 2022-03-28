@@ -4,6 +4,8 @@ export const TurnContainer = styled.div`
   position: relative;
   width: 300px;
   margin: auto;
+  z-index: 4;
+  height: 75px;
 `;
 
 export const TurnString = styled.div`
@@ -13,7 +15,7 @@ export const TurnString = styled.div`
   margin-right: auto;
   left: 0;
   right: 0;
-  bottom: 45px;
+  bottom: 22px;
   text-align: center;
 `;
 
@@ -105,5 +107,14 @@ export const lastBidContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: flex-start;
+  justify-content: center;
+`;
+
+export const RoomDice = styled.div`
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  width: 100%;
+  display: flex;
   justify-content: center;
 `;
