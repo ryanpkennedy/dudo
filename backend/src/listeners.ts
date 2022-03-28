@@ -4,7 +4,6 @@ import { Socket } from 'socket.io';
 //https://socket.io/docs/v4/listening-to-events/#error-handling
 
 interface User {
-  avatarSelection: string;
   diceRemaining: number;
   currentDice: number[];
   roomLeader?: boolean;
@@ -134,7 +133,6 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     ) => {
       try {
         let newUser: User = {
-          avatarSelection: user.avatarSelection,
           diceRemaining: diceCount,
           currentDice: [],
           roomLeader: false,
@@ -187,6 +185,20 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       }
     }
   );
+
+  socket.on('room-settings', ({ room, diceCount }) => {
+    try {
+      if (db[room]) {
+        let usersArray = Object.getOwnPropertyNames(db[room].users);
+        for (let i of usersArray) {
+          db[room].users[i].diceRemaining = diceCount;
+        }
+        io.to(room).emit('update-state', db[room]);
+      }
+    } catch (err) {
+      console.log('room-settings error: ', err);
+    }
+  });
 
   socket.on('close-room', ({ room }, callback) => {
     //add turn randomizer in here, so the game doesn't always start with the person who first joined room

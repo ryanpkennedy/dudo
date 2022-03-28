@@ -34,4 +34,8 @@ export const Settings = styled.div`
   right: 25px;
   display: flex;
   align-items: center;
+  cursor: pointer;
+  &:active {
+    opacity: 0.5;
+  }
 `;

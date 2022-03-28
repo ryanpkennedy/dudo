@@ -24,7 +24,6 @@ let io = new Server(httpServer, {
 });
 
 interface User {
-  avatarSelection: string;
   diceRemaining: number;
   currentDice: number[];
   roomLeader?: boolean;
