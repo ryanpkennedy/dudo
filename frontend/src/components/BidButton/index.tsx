@@ -14,6 +14,9 @@ const BidButton = () => {
   console.log('(Game) playstate.username: ', playerState.username);
 
   const checkBid = (currBid: { amount: number; face: number }) => {
+    if (currBid.amount === 0 || currBid.face === 0) {
+      return false;
+    }
     if (currBid.amount > gameState.lastBid?.amount!) {
       return true;
     } else if (
@@ -40,7 +43,7 @@ const BidButton = () => {
       socket.emit('increment-turn', { room: playerState.room });
     } else {
       alert(
-        'not a valid bid. amount must be higher or equal and if equal face must be higher'
+        'not a valid bid. amount must be higher or equal and if equal face must be higher. And cant bid zeroes'
       );
     }
   };
