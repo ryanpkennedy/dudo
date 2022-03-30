@@ -9,12 +9,15 @@ import React, {
 import { GameContext } from './GameContext';
 import { SocketContext } from './SocketProvider';
 
+export type Phase = 'bid' | 'results' | 'winner';
+
 interface PlayerState {
   id?: string | null;
   username?: string | null;
   room?: string | null;
   avatar?: 'male' | 'female' | null;
   currentBid: { amount: number; face: number };
+  phase: Phase;
 }
 
 interface PlayerContext {
@@ -23,7 +26,7 @@ interface PlayerContext {
 }
 
 export const PlayerContext = React.createContext<PlayerContext>({
-  playerState: { currentBid: { amount: 0, face: 0 } },
+  playerState: { currentBid: { amount: 0, face: 0 }, phase: 'bid' },
   setPlayerState: () => true,
 });
 
@@ -39,8 +42,18 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
     username: username,
     room: room,
     // phase: 'bid',
+    phase: 'bid',
     currentBid: { amount: 0, face: 0 },
   });
+
+  const updatePhase = (state: PlayerState, phase: Phase) => {
+    setPlayerState({
+      username: state.username,
+      room: state.room,
+      currentBid: state.currentBid,
+      phase: phase,
+    });
+  };
 
   useEffect(() => {
     socket.on('update-state', (state) => {
@@ -56,6 +69,9 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         lastBid: state.lastBid,
         palifico: state.palifico,
       });
+      if (state.phase === 'results' || state.phase === 'winner') {
+        updatePhase(playerState, state.phase);
+      }
     });
 
     socket.on('next-turn', () => {

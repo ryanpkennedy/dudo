@@ -12,7 +12,10 @@ const Results = () => {
   const usersArray = Object.getOwnPropertyNames(gameState.users);
 
   const handleNextRound = () => {
-    socket.emit('next-round', { room: playerState.room });
+    if (gameState.phase === 'results') {
+      socket.emit('next-round', { room: playerState.room });
+    }
+    setPlayerState({ ...playerState, phase: 'bid' });
   };
 
   let loser =

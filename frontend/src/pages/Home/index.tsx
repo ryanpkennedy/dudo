@@ -5,6 +5,7 @@ import { SocketContext } from '../../Context/SocketProvider';
 import Login from '../../pages/Login';
 import Room from '../Room';
 import * as sc from './styled';
+import { Phase } from '../../Context/PlayerContext';
 
 const Home = React.memo(() => {
   console.log('(Home) Home Component rendered');
@@ -26,6 +27,7 @@ const Home = React.memo(() => {
             username: '',
             room: '',
             currentBid: { amount: 0, face: 0 },
+            phase: 'bid' as Phase,
           };
           setPlayerState(newPlayerState);
         }

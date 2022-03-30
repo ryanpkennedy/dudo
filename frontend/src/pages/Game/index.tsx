@@ -20,7 +20,7 @@ const Game = () => {
     }
   };
 
-  return <>{gamePage(gameState.phase)}</>;
+  return <>{gamePage(playerState.phase)}</>;
 };
 
 export default Game;
