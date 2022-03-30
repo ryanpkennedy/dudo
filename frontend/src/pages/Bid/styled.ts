@@ -74,7 +74,7 @@ export const DiceCupContainer = styled.div`
   /* width: 80%; */
   width: 200px;
   height: 225px;
-  margin: auto;
+  margin: 0 auto 24px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -111,7 +111,8 @@ export const lastBidContainer = styled.div`
 `;
 
 export const RoomDice = styled.div`
-  position: absolute;
+  /* position: absolute; */
+  /* padding: 8px; */
   bottom: 16px;
   left: 0;
   width: 100%;

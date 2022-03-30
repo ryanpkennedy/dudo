@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 
 let mode = 'dev';
 let socketUrl =
-  mode === 'dev' ? 'http://localhost:4000' : 'https://www.rykennedy.com';
+  mode === 'dev' ? 'http://192.168.1.139:4000' : 'https://www.rykennedy.com';
 
 interface ContextInterface {
   socket: Socket;
