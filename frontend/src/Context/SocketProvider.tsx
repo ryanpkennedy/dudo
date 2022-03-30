@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-let mode = 'dev';
+let mode = 'prod';
 let socketUrl =
   mode === 'dev' ? 'http://192.168.1.139:4000' : 'https://www.rykennedy.com';
 

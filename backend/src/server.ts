@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { registerListeners } from './listeners';
 
-let mode = 'dev';
+let mode = 'prod';
 let socketCors = mode === 'dev' ? '*' : 'https://rykennedy.com';
 
 const app = express();
