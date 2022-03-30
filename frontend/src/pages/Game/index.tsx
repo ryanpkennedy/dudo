@@ -21,6 +21,8 @@ const Game = () => {
   };
 
   return <>{gamePage(playerState.phase || gameState.phase)}</>;
+
+  // return <>{gamePage(playerState.phase || gameState.phase)}</>;
 };
 
 export default Game;

@@ -55,7 +55,11 @@ const Home = React.memo(() => {
     <>
       <sc.AppContainer>
         <sc.HomeContainer>
-          {id ? <Room></Room> : <Login></Login>}
+          {id && gameState.users[playerState.username || ''] ? (
+            <Room></Room>
+          ) : (
+            <Login></Login>
+          )}
         </sc.HomeContainer>
       </sc.AppContainer>
       <div style={{ fontSize: '14px' }}>

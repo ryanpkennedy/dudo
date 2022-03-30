@@ -69,6 +69,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
     for (let user of usersArray) {
       if (tempRoom.users[user].diceRemaining === 0) {
         delete tempRoom['users'][user];
+        usersArray = Object.getOwnPropertyNames(tempRoom.users);
       } else if (tempRoom.users[user].diceRemaining === 1) {
         oneCount++;
       }
@@ -77,6 +78,9 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
       tempRoom.palifico = true;
     } else {
       tempRoom.palifico = false;
+    }
+    if (tempRoom.turn > usersArray.length - 1) {
+      tempRoom.turn = tempRoom.turn - 1;
     }
     return tempRoom;
   };
