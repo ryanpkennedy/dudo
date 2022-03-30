@@ -3,6 +3,7 @@ import { GameContext } from '../../Context/GameContext';
 import { PlayerContext } from '../../Context/PlayerContext';
 import { SocketContext } from '../../Context/SocketProvider';
 import * as sc from './styled';
+import { Phase } from '../../Context/PlayerContext';
 
 const Results = () => {
   const { socket } = useContext(SocketContext);
@@ -15,15 +16,12 @@ const Results = () => {
     if (gameState.phase === 'results') {
       socket.emit('next-round', { room: playerState.room });
     }
+    //@ts-ignore
     setPlayerState({ ...playerState, phase: 'bid' });
   };
 
   let loser =
-    gameState.loser === -1
-      ? 'No One'
-      : usersArray[gameState.turn] === playerState.username
-      ? 'You'
-      : usersArray[gameState.turn];
+    gameState.loser === playerState.username ? 'You' : gameState.loser;
 
   return (
     <sc.Results>

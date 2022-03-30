@@ -69,17 +69,22 @@ const PlayerContextProvider = ({ children }: { children: ReactNode }) => {
         lastBid: state.lastBid,
         palifico: state.palifico,
       });
-      if (state.phase === 'results' || state.phase === 'winner') {
-        updatePhase(playerState, state.phase);
-      }
     });
 
-    socket.on('next-turn', () => {
-      console.log('(Game Context) next turn event received');
-      let oldTurn = gameState.turn;
-      setGameState({ ...gameState, turn: oldTurn + 1 });
-    });
+    // socket.on('next-turn', () => {
+    //   console.log('(Game Context) next turn event received');
+    //   let oldTurn = gameState.turn;
+    //   setGameState({ ...gameState, turn: oldTurn + 1 });
+    // });
   }, []);
+
+  useEffect(() => {
+    if (gameState.phase === 'results') {
+      updatePhase(playerState, gameState.phase);
+    } else if (gameState.phase === 'winner' && playerState.phase === 'bid') {
+      updatePhase(playerState, gameState.phase);
+    }
+  }, [gameState]);
 
   return (
     <PlayerContext.Provider value={{ playerState, setPlayerState }}>
