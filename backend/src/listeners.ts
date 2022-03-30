@@ -15,7 +15,7 @@ interface room {
   turn: number;
   dice: { [key: number]: number };
   phase: 'bid' | 'results' | 'winner';
-  loser: number;
+  loser: string;
   lastBid: { amount: number; face: number };
   palifico: boolean;
 }
@@ -151,7 +151,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
               turn: 0,
               dice: {},
               phase: 'bid',
-              loser: 0,
+              loser: '',
               lastBid: { amount: 0, face: 0 },
               palifico: false,
             };
@@ -273,7 +273,7 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
           db[room]['users'][loser].diceRemaining -= 1;
         }
         db[room].phase = 'results';
-        db[room].loser = db[room].turn;
+        db[room].loser = usersArray[db[room].turn];
         io.to(room).emit('update-state', db[room]);
       }
     } catch (err) {
@@ -295,10 +295,10 @@ export const registerListeners = async (io: any, socket: Socket, db: db) => {
         db[room].phase = 'results';
         let usersArray = Object.getOwnPropertyNames(db[room]['users']);
         if (bidAmount === roomAmount) {
-          db[room].loser = -1;
+          db[room].loser = 'No One';
         } else {
-          db[room].loser = db[room].turn;
-          let loser = usersArray[db[room].loser];
+          db[room].loser = usersArray[db[room].turn];
+          let loser = db[room].loser;
           db[room]['users'][loser].diceRemaining -= 1;
         }
         io.to(room).emit('update-state', db[room]);

@@ -35,7 +35,7 @@ interface room {
   turn: number;
   dice: { [key: number]: number };
   phase: 'bid' | 'results' | 'winner';
-  loser: number;
+  loser: string;
   lastBid: { amount: number; face: number };
   palifico: boolean;
   settings: {};
